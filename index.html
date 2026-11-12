@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jhon González Aricapa · GIS & Full Stack Developer</title>
+<meta name="description" content="GIS and Full Stack Developer. Geospatial pipelines in Python (PyQGIS, ArcPy) and the products around them (FastAPI, React, TypeScript). Cali, Colombia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f0e; --bg2:#101615; --card:#131a19; --line:#22302d; --fg:#e8efec; --muted:#93a39e;
+  --accent:#4ee3b0; --accent2:#f2c14e; --accent3:#5aa9ff; --glow:rgba(78,227,176,.14);
+}
+@media (prefers-color-scheme:light){
+  :root{--bg:#f6f4ee;--bg2:#efece4;--card:#ffffff;--line:#dcd7cb;--fg:#15201d;--muted:#5b6a65;--accent:#0f8a63;--accent2:#b7820c;--accent3:#2a6fd1;--glow:rgba(15,138,99,.10)}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.02em;margin:0}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo img{width:30px;height:30px;border-radius:50%;object-fit:cover;display:inline-block}
+nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:14px}
+nav ul a{text-decoration:none;color:var(--muted)}
+nav ul a:hover{color:var(--accent)}
+@media (max-width:640px){nav ul{display:none}}
+
+/* HERO */
+.hero{position:relative;padding:88px 0 72px;overflow:hidden}
+.contours{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+.contours path{fill:none;stroke:var(--accent);stroke-width:1;opacity:.22}
+.contours path.major{opacity:.45;stroke-width:1.3}
+.hero .wrap{position:relative;display:grid;gap:44px;grid-template-columns:1fr}
+@media (min-width:900px){.hero .wrap{grid-template-columns:1.25fr .9fr;align-items:center}}
+.coord{font-size:12.5px;color:var(--accent);letter-spacing:.08em;margin-bottom:18px;display:inline-flex;gap:10px;align-items:center;border:1px solid var(--line);padding:5px 12px;border-radius:999px;background:var(--bg2)}
+.coord b{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--glow);animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px transparent}}
+.hero h1{font-size:clamp(38px,6.4vw,68px);line-height:1.02;margin-bottom:18px}
+.hero h1 span{background:linear-gradient(90deg,var(--accent),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:590px;margin:0 0 28px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--card);transition:.2s}
+.btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.btn.primary{background:var(--accent);color:#06221a;border-color:var(--accent)}
+.btn svg{width:17px;height:17px}
+
+/* hero card: map panel */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 30px 80px -30px rgba(0,0,0,.5)}
+.panel-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:10px}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.map{width:100%;height:auto;border-radius:12px;display:block;background:var(--bg2)}
+.legend{display:flex;gap:6px;align-items:center;margin-top:10px;font-size:11.5px;color:var(--muted)}
+.legend i{width:22px;height:8px;border-radius:2px;display:inline-block}
+.caption{font-size:11.5px;color:var(--muted);margin-top:6px;opacity:.8}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:8px}
+@media (min-width:760px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);padding:22px 20px}
+.stat b{display:block;font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-size:32px;line-height:1;margin-bottom:6px;color:var(--fg)}
+.stat span{font-size:13.5px;color:var(--muted)}
+
+/* SECTIONS */
+section{padding:84px 0 0}
+.eyebrow{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sec-title{font-size:clamp(28px,4vw,40px);margin-bottom:12px}
+.sec-sub{color:var(--muted);max-width:640px;margin:0 0 34px}
+
+/* FEATURED */
+.feature{display:grid;gap:28px;grid-template-columns:1fr;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;position:relative;overflow:hidden}
+@media (min-width:900px){.feature{grid-template-columns:1fr 1.05fr;padding:38px}}
+.feature::before{content:"";position:absolute;width:420px;height:420px;right:-160px;top:-160px;background:radial-gradient(circle,var(--glow),transparent 70%)}
+.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--accent2);border:1px solid color-mix(in srgb,var(--accent2) 40%,transparent);padding:3px 10px;border-radius:999px;margin-bottom:14px}
+.feature h3{font-size:30px;margin-bottom:6px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:16px}
+.points{list-style:none;padding:0;margin:0 0 18px}
+.points li{position:relative;padding-left:22px;margin-bottom:9px}
+.points li::before{content:"";position:absolute;left:0;top:.62em;width:9px;height:9px;border:2px solid var(--accent);border-radius:50%}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips span{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12px;padding:4px 10px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);color:var(--fg)}
+.arch{width:100%;height:auto;position:relative}
+.arch text{font-family:"JetBrains Mono",monospace;font-size:11px;fill:var(--fg)}
+.arch .sub{fill:var(--muted);font-size:9.5px}
+.arch rect.box{fill:var(--bg2);stroke:var(--line);rx:10}
+.arch rect.hl{stroke:var(--accent)}
+.arch .flow{stroke:var(--accent);stroke-width:1.5;fill:none;stroke-dasharray:5 5;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-20}}
+
+/* PROJECT GRID */
+.grid{display:grid;gap:18px;grid-template-columns:1fr;margin-top:18px}
+@media (min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;transition:.25s;position:relative}
+.card:hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));transform:translateY(-3px)}
+.card .ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:var(--bg2);border:1px solid var(--line);margin-bottom:16px}
+.card .ico svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.8}
+.card h3{font-size:21px;margin-bottom:4px}
+.card p{color:var(--muted);margin:0 0 14px}
+.card .impact{font-size:14px;color:var(--fg);border-left:2px solid var(--accent);padding-left:10px;margin-bottom:16px}
+
+/* SKILLS */
+.skillgrid{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:760px){.skillgrid{grid-template-columns:repeat(3,1fr)}}
+.sk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.sk h4{margin:0 0 12px;font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-size:16px;display:flex;align-items:center;gap:8px}
+.sk h4 i{width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.sk:nth-child(3n+2) h4 i{background:var(--accent3)}.sk:nth-child(3n) h4 i{background:var(--accent2)}
+
+/* TIMELINE */
+.tl{position:relative;margin-left:8px;border-left:1px dashed var(--line);padding-left:26px}
+.tl-item{position:relative;padding-bottom:28px}
+.tl-item::before{content:"";position:absolute;left:-33px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl-item .when{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--accent)}
+.tl-item h4{margin:2px 0 2px;font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-size:18px}
+.tl-item p{margin:0;color:var(--muted)}
+
+/* CONTACT */
+.contact{margin:90px 0 0;padding:44px 28px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(135deg,var(--card),var(--bg2));text-align:center;position:relative;overflow:hidden}
+.contact h2{font-size:clamp(28px,4vw,40px);margin-bottom:10px}
+.contact p{color:var(--muted);margin:0 auto 24px;max-width:520px}
+.contact .cta{justify-content:center}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:36px 0 44px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#top"><img src="profile.jpeg" alt="Foto de Jhon González">Jhon González</a>
+  <ul><li><a href="#work">Work</a></li><li><a href="#skills">Skills</a></li><li><a href="#path">Experience</a></li><li><a href="#contact">Contact</a></li></ul>
+</div></nav>
+
+<header class="hero" id="top">
+  <svg class="contours" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true" id="contours"></svg>
+  <div class="wrap">
+    <div>
+      <div class="coord mono"><b></b>3.4516° N, 76.5320° W · CALI, CO</div>
+      <h1>I turn <span>spatial data</span><br>into software people use.</h1>
+      <p class="lead">I'm a GIS and Full Stack Developer. I build geospatial pipelines in Python (PyQGIS, ArcPy) and the products around them in FastAPI, React and TypeScript. My background is in topographic engineering, and I've spent 2+ years shipping production software for agro-industry, construction and insurance.</p>
+      <div class="cta">
+        <a class="btn primary" href="#work">See my work
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="mailto:jhon.gonzalez.aricapa@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email me</a>
+        <a class="btn" href="https://www.linkedin.com/in/jhon-aricapa/">LinkedIn</a>
+        <a class="btn" href="https://github.com/jenestiven">GitHub</a>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-top"><div class="dots"><i></i><i></i><i></i></div><span class="mono">productivity_map.qgz</span></div>
+      <svg class="map" id="lots" viewBox="0 0 360 260" aria-label="Illustrative productivity map of agricultural lots"></svg>
+      <div class="legend mono">TCH
+        <i style="background:#c0392b"></i><i style="background:#e67e22"></i><i style="background:#f1c40f"></i><i style="background:#7fc97f"></i><i style="background:#1b7f4b"></i>
+        <span style="margin-left:auto">Jenks · 5 classes</span></div>
+      <div class="caption">Illustration of the kind of map my pipeline produces (not real data)</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="stats reveal">
+    <div class="stat"><b>400+</b><span>active projects managed on a platform I helped build</span></div>
+    <div class="stat"><b>~50</b><span>daily operational users on my software</span></div>
+    <div class="stat"><b>9</b><span>sprints to deliver the Manuelita Smart API</span></div>
+    <div class="stat"><b>3</b><span>agricultural data sources integrated (Solinftec, Biosalc, NAX)</span></div>
+  </div>
+</div>
+
+<section id="work"><div class="wrap">
+  <div class="eyebrow mono">// selected work</div>
+  <h2 class="sec-title">Featured projects</h2>
+  <p class="sec-sub">Most of my work is private client software, so the code and live demos aren't public. I'm happy to walk through any of these in an interview.</p>
+
+  <article class="feature reveal">
+    <div>
+      <span class="tag">Precision agriculture · 2026</span>
+      <h3>Manuelita Smart</h3>
+      <div class="meta">Ingenio Manuelita S.A., one of Colombia's largest sugarcane producers</div>
+      <ul class="points">
+        <li>A local-first desktop platform that centralizes the sugarcane productivity-mapping workflow in one place.</li>
+        <li>I built the FastAPI + Pydantic API over 9 sprints, with one unified lot data model shared by every workflow stage.</li>
+        <li>It pulls in data from Solinftec, Biosalc and NAX. I reverse-engineered the Biosalc TXT format and wrote a normalization algorithm for its productivity data.</li>
+        <li>I also built a QGIS/PyQGIS map pipeline alongside the ArcGIS/ArcPy one, using SAGA B-spline interpolation, Jenks classification and automated layouts.</li>
+        <li>Along the way I found the cartographic base was on Bogotá 1975 (EPSG:21896) instead of MAGNA-SIRGAS, and documented how that affects spatial accuracy.</li>
+      </ul>
+      <div class="chips"><span>FastAPI</span><span>Pydantic</span><span>SQLite</span><span>React</span><span>TypeScript</span><span>PyWebView</span><span>PyQGIS</span><span>ArcPy</span><span>SAGA</span></div>
+    </div>
+    <svg class="arch" viewBox="0 0 440 330" aria-label="Manuelita Smart architecture">
+      <rect class="box" x="10" y="20" width="120" height="44" rx="10"/><text x="22" y="40">Solinftec</text><text class="sub" x="22" y="54">telemetry</text>
+      <rect class="box" x="10" y="84" width="120" height="44" rx="10"/><text x="22" y="104">Biosalc TXT</text><text class="sub" x="22" y="118">reverse-engineered</text>
+      <rect class="box" x="10" y="148" width="120" height="44" rx="10"/><text x="22" y="168">NAX CSV</text><text class="sub" x="22" y="182">field exports</text>
+      <path class="flow" d="M130 42 C 166 42,166 106,196 106"/><path class="flow" d="M130 106 H196"/><path class="flow" d="M130 170 C 166 170,166 106,196 106"/>
+      <rect class="box hl" x="196" y="76" width="146" height="60" rx="10"/><text x="212" y="98">FastAPI + Pydantic</text><text class="sub" x="212" y="114">normalization ·</text><text class="sub" x="212" y="126">unified Lot model</text>
+      <path class="flow" d="M269 136 V170"/>
+      <rect class="box" x="196" y="170" width="146" height="40" rx="10"/><text x="208" y="194">SQLite (local-first)</text>
+      <path class="flow" d="M342 106 H354 V62"/>
+      <rect class="box" x="318" y="14" width="112" height="48" rx="10"/><text x="328" y="35">React / TS</text><text class="sub" x="328" y="50">PyWebView UI</text>
+      <path class="flow" d="M269 210 V246"/>
+      <rect class="box" x="140" y="246" width="250" height="62" rx="10"/><text x="152" y="268">GIS pipeline  ·  PyQGIS / ArcPy</text><text class="sub" x="152" y="284">B-spline (SAGA) → Jenks → layouts</text><text class="sub" x="152" y="298">MAGNA-SIRGAS datum handling</text>
+    </svg>
+  </article>
+
+  <div class="grid">
+    <article class="card reveal">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/></svg></div>
+      <h3>Renovation Management Platform</h3>
+      <div class="meta">Justo Pago Remodelaciones · 2023 – 2026</div>
+      <p>An end-to-end operations platform for a renovation company. I joined as Junior Dev &amp; QA and was promoted to Full Stack.</p>
+      <div class="impact">Used by ~50 people to run 400+ active projects</div>
+      <ul class="points">
+        <li>Inventory, purchasing and finance modules, covering budgets, client payments and cash flow</li>
+        <li>A GIS sectorization map in Mapbox GL JS and a real-time project chat</li>
+        <li>ZapSign e-signature, Twilio notifications and automated PDF contracts</li>
+      </ul>
+      <div class="chips"><span>React</span><span>Firebase</span><span>Mapbox GL JS</span><span>Twilio</span><span>ZapSign</span></div>
+    </article>
+
+    <article class="card reveal">
+      <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 15v-3M12 15V9M17 15v-5"/></svg></div>
+      <h3>SOAT Sales SaaS</h3>
+      <div class="meta">Automotive inspection center · Freelance · 2025</div>
+      <p>A multi-branch sales platform for mandatory vehicle insurance that I designed and shipped on my own, from requirements to production.</p>
+      <div class="impact">Built solo, from architecture to deployment</div>
+      <ul class="points">
+        <li>Role-based access for sales advisors and administrators</li>
+        <li>Sales paid through Addi, Sistecredito and Brilla credit</li>
+        <li>Real-time dashboards and billing reconciliation</li>
+      </ul>
+      <div class="chips"><span>Next.js</span><span>Node.js</span><span>Firestore</span><span>Firebase Hosting</span></div>
+    </article>
+
+    <article class="card reveal">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+      <h3>Field Operations Monorepo</h3>
+      <div class="meta">ATG Force · Contract, then freelance</div>
+      <p>A web and mobile system for a construction subcontractor covering jobs, scheduling, worksheets, GPS and photo time tracking, and payroll.</p>
+      <div class="impact">Delivered in 7 sprints and running in production</div>
+      <div class="chips"><span>Turborepo</span><span>Express</span><span>React</span><span>React Native</span><span>PostgreSQL</span><span>Railway</span><span>R2</span></div>
+    </article>
+
+    <article class="card reveal">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 20 9 8l4 7 3-5 5 10z"/></svg></div>
+      <h3>Landslide Susceptibility Model</h3>
+      <div class="meta">Undergraduate thesis · Siloé, Cali</div>
+      <p>An AHP-WLC multicriteria model with a dynamic anthropic component, built entirely on open remote-sensing data.</p>
+      <div class="impact">Open data only: Sentinel-2, Copernicus DEM, ALOS PALSAR, OpenStreetMap</div>
+      <div class="chips"><span>Remote sensing</span><span>Multicriteria analysis</span><span>QGIS</span></div>
+    </article>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap">
+  <div class="eyebrow mono">// toolbox</div>
+  <h2 class="sec-title">What I work with</h2>
+  <p class="sec-sub">I can work across the whole path from raw field data to a finished product.</p>
+  <div class="skillgrid">
+    <div class="sk reveal"><h4><i></i>Geospatial</h4><div class="chips"><span>PyQGIS</span><span>ArcPy</span><span>QGIS</span><span>ArcGIS</span><span>SAGA</span><span>Mapbox GL JS</span><span>CRS / datums</span><span>Sentinel-2</span></div></div>
+    <div class="sk reveal"><h4><i></i>Backend</h4><div class="chips"><span>Python</span><span>FastAPI</span><span>Pydantic</span><span>Node.js</span><span>Express</span><span>REST APIs</span><span>PostgreSQL</span><span>SQLite</span><span>Firestore</span></div></div>
+    <div class="sk reveal"><h4><i></i>Frontend</h4><div class="chips"><span>React</span><span>TypeScript</span><span>Next.js</span><span>Vite</span><span>Tailwind</span><span>React Native</span></div></div>
+    <div class="sk reveal"><h4><i></i>Surveying</h4><div class="chips"><span>GNSS RTK/PPK</span><span>Total station</span><span>UAV photogrammetry</span><span>Civil 3D</span></div></div>
+    <div class="sk reveal"><h4><i></i>Ship &amp; deploy</h4><div class="chips"><span>Git</span><span>Vercel</span><span>Railway</span><span>Cloudflare R2</span><span>Firebase</span><span>Turborepo</span></div></div>
+    <div class="sk reveal"><h4><i></i>Ways of working</h4><div class="chips"><span>End-to-end ownership</span><span>Sprints</span><span>Technical docs</span><span>Claude Code</span></div></div>
+  </div>
+</div></section>
+
+<section id="path"><div class="wrap">
+  <div class="eyebrow mono">// path</div>
+  <h2 class="sec-title">Experience &amp; education</h2>
+  <div class="tl" style="margin-top:30px">
+    <div class="tl-item reveal"><div class="when">JUN 2026 – DEC 2026</div><h4>Precision Agriculture Intern, Software &amp; GIS</h4><p>Ingenio Manuelita S.A.</p></div>
+    <div class="tl-item reveal"><div class="when">JUL 2025 – DEC 2025</div><h4>Full Stack Developer (Freelance)</h4><p>Automotive inspection center: SOAT sales SaaS</p></div>
+    <div class="tl-item reveal"><div class="when">DEC 2024 – FEB 2026</div><h4>Full Stack Developer</h4><p>Justo Pago Remodelaciones</p></div>
+    <div class="tl-item reveal"><div class="when">DEC 2023 – DEC 2024</div><h4>Junior Developer &amp; QA</h4><p>Justo Pago Remodelaciones (promoted)</p></div>
+    <div class="tl-item reveal"><div class="when">CONTRACT + FREELANCE</div><h4>Software Developer</h4><p>ATG Force</p></div>
+    <div class="tl-item reveal"><div class="when">2019 – PRESENT</div><h4>B.Eng. Topographic Engineering (thesis stage)</h4><p>Universidad del Valle. The program is now called Geomatics Engineering.</p></div>
+    <div class="tl-item reveal"><div class="when">2022 – PRESENT</div><h4>Software Development Technology (in progress)</h4><p>Universidad del Valle · Spanish (native) · English (B2, certified)</p></div>
+  </div>
+</div></section>
+
+<div class="wrap">
+  <div class="contact reveal" id="contact">
+    <div class="eyebrow mono">// let's talk</div>
+    <h2>Open to GIS and full stack roles</h2>
+    <p>I'm open to remote roles, and to hybrid or on-site roles in Colombia and Europe.</p>
+    <div class="cta">
+      <a class="btn primary" href="mailto:jhon.gonzalez.aricapa@gmail.com">jhon.gonzalez.aricapa@gmail.com</a>
+      <a class="btn" href="https://www.linkedin.com/in/jhon-aricapa/">LinkedIn</a>
+      <a class="btn" href="https://github.com/jenestiven">GitHub</a>
+    </div>
+  </div>
+  <footer class="mono">© 2026 Jhon Steven González Aricapa · Built by hand, no frameworks</footer>
+</div>
+
+<script>
+// Topographic contour lines (deterministic noise)
+(function(){
+  const svg=document.getElementById('contours'),W=1200,H=700;
+  function n(x,y){return Math.sin(x*.006+1.3)*Math.cos(y*.008)+.6*Math.sin(x*.011-y*.007+2)+.35*Math.cos(x*.017+y*.013)}
+  const N=14,out=[];
+  for(let k=0;k<N;k++){
+    const base=60+k*48;let d='';
+    for(let x=-20;x<=W+20;x+=20){const y=base+38*n(x,base);d+=(x===-20?'M':'L')+x+' '+y.toFixed(1)+' '}
+    out.push('<path class="'+(k%4===0?'major':'')+'" d="'+d+'"/>');
+  }
+  svg.innerHTML=out.join('');
+})();
+// Illustrative lot productivity map
+(function(){
+  const s=document.getElementById('lots'),cols=['#c0392b','#e67e22','#f1c40f','#7fc97f','#1b7f4b'];
+  let seed=7;const r=()=>(seed=(seed*9301+49297)%233280)/233280;
+  let h='';const cw=30,ch=26;
+  for(let j=0;j<10;j++)for(let i=0;i<12;i++){
+    const x=i*cw,y=j*ch,v=(Math.sin(i*.55+.4)+Math.cos(j*.6-1)+r()*.9+1.2)/4.1;
+    const c=cols[Math.max(0,Math.min(4,Math.floor(v*5)))];
+    const sk=(r()-.5)*6;
+    h+='<polygon points="'+(x+1)+','+(y+1+sk)+' '+(x+cw-1)+','+(y+1)+' '+(x+cw-1)+','+(y+ch-1-sk)+' '+(x+1)+','+(y+ch-1)+'" fill="'+c+'" opacity=".88"/>';
+  }
+  h+='<path d="M0 132 C 90 120,170 150,360 128" stroke="rgba(255,255,255,.75)" stroke-width="3" fill="none"/>';
+  h+='<path d="M178 0 C 186 90,170 170,182 260" stroke="rgba(255,255,255,.55)" stroke-width="2" fill="none" stroke-dasharray="6 4"/>';
+  s.innerHTML=h;
+})();
+// reveal on scroll
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return}
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  els.forEach(e=>io.observe(e));
+})();
+</script>
+</body>
+</html>
