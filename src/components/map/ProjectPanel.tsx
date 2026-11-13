@@ -343,7 +343,7 @@ function ProfileBody({ detail }: { detail: ProfileDetail }) {
     <>
       {imageFailed ? (
         <div
-          className={`flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 text-sm text-white/50 ${
+          className={`flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 text-sm text-white/50  ${
             isSkills ? 'aspect-[16/6]' : 'aspect-[4/3]'
           }`}
         >
