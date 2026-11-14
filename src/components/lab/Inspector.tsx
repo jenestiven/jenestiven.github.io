@@ -43,6 +43,12 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
   const [status, setStatus] = useState<{ ok: boolean; message: string }>({ ok: true, message: 'Valid style' })
   /** Propiedades que el editor ha aplicado, para poder restaurarlas. */
   const appliedRef = useRef<Set<string>>(new Set())
+  /**
+   * En móvil el inspector es una hoja inferior que abre plegada (solo la
+   * cabecera) para no tapar la capa recién encuadrada. En escritorio siempre
+   * se ve completo.
+   */
+  const [expanded, setExpanded] = useState(false)
   const timerRef = useRef<number | undefined>(undefined)
 
   // Cambiar de proyecto reinicia el editor.
@@ -50,6 +56,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
     setText(initialText)
     setStatus({ ok: true, message: 'Valid style' })
     appliedRef.current = new Set()
+    setExpanded(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id])
 
@@ -110,7 +117,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
   const inProgress = project.status === 'in-progress'
 
   return (
-    <section className="flex max-h-full min-h-0 flex-col overflow-hidden rounded-t-2xl border border-lab-line bg-lab-card/95 backdrop-blur-md md:rounded-2xl">
+    <section className="flex max-h-[74svh] min-h-0 w-full flex-col overflow-hidden rounded-t-2xl border border-lab-line bg-lab-card/95 backdrop-blur-md md:max-h-full md:rounded-2xl">
       <header className="border-b border-lab-line px-5 pt-4 pb-3">
         <div className="flex items-start justify-between gap-3">
           <span
@@ -128,15 +135,24 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
             ✕
           </button>
         </div>
-        <h2 className="mt-2 font-display text-2xl leading-tight font-bold tracking-tight">{project.title}</h2>
+        <h2 className="mt-2 font-display text-xl leading-tight font-bold tracking-tight md:text-2xl">{project.title}</h2>
         <p className="mt-1 text-[13.5px] text-lab-muted">{project.meta}</p>
         <p className="mt-2 flex items-center gap-2 font-code text-[11px]" style={{ color: lens.color }}>
           <i className="h-2 w-2 rounded-[2px]" style={{ background: lens.color }} />
           {lens.label} lens · {project.layer.kind}
           {inProgress && <span className="ml-1 rounded-full border border-[#f2c14e66] px-1.5 text-[#f2c14e]">in progress</span>}
         </p>
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-3 w-full rounded-lg border border-lab-line py-2 font-code text-[11.5px] text-lab-muted md:hidden"
+        >
+          {expanded ? 'Hide details ↓' : 'Project details and layer style ↑'}
+        </button>
       </header>
 
+      <div className={`${expanded ? 'flex' : 'hidden'} min-h-0 flex-1 flex-col md:flex`}>
       <div role="tablist" className="flex border-b border-lab-line font-code text-[12px]">
         {(['attributes', 'style'] as const).map((t) => (
           <button
@@ -227,6 +243,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
           </div>
         </div>
       )}
+      </div>
     </section>
   )
 }

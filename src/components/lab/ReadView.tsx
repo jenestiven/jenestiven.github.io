@@ -110,7 +110,8 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
         <div className="mx-auto flex h-[60px] max-w-[1120px] items-center justify-between px-5">
           <button type="button" onClick={() => go('top')} className="flex items-center gap-2.5 font-display font-bold">
             <img src={profile.photo} alt="" className="h-[30px] w-[30px] rounded-full object-cover" />
-            {profile.shortName}
+            {/* En móvil el conmutador Explore/Read ocupa el centro de la barra: solo cabe la foto. */}
+            <span className="hidden sm:inline">{profile.shortName}</span>
           </button>
           <div className="flex items-center gap-5 text-[14px]">
             <ul className="hidden gap-5 text-lab-muted sm:flex">

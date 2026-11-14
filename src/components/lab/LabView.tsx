@@ -34,6 +34,10 @@ type Intro = 'hero' | 'flying' | 'reveal' | 'done'
 /** El valle de Cali con la ladera occidental a la vista. */
 const LAB_CAMERA: MapCamera = { center: [-76.505, 3.425], zoom: 11.6, pitch: 50, bearing: -14 }
 
+/** En una pantalla angosta el valle no cabe a ese zoom: se abre el encuadre. */
+const landingCamera = (): MapCamera =>
+  window.innerWidth < 768 ? { ...LAB_CAMERA, center: [-76.5, 3.432], zoom: 10.3, pitch: 36 } : LAB_CAMERA
+
 /** Standard en noche + monocromo: el mapa base se apaga para que las lentes pongan el color. */
 const LAB_BASEMAP = {
   basemap: {
@@ -73,7 +77,7 @@ const REVEAL_STEP_MS = 1400
 /** Deja libres los paneles al encuadrar una capa. */
 function framePadding() {
   if (window.innerWidth < 768) {
-    return { top: 140, bottom: Math.round(window.innerHeight * 0.55), left: 30, right: 30 }
+    return { top: 150, bottom: 250, left: 24, right: 24 }
   }
   return { top: 90, bottom: 90, left: 410, right: 470 }
 }
@@ -137,7 +141,7 @@ export default function LabView({ profile, projects }: Props) {
     }
 
     const instance = initMap('lab-map', {
-      camera: deepLink ? LAB_CAMERA : INTRO_CAMERA,
+      camera: deepLink ? landingCamera() : INTRO_CAMERA,
       // Globe se convierte solo en mercator al acercarse: sirve para la portada y para el valle.
       projection: 'globe',
       config: LAB_BASEMAP,
@@ -151,7 +155,7 @@ export default function LabView({ profile, projects }: Props) {
       const { projects, datasets, timeline } = initRef.current
       registryRef.current = addLabLayers(instance, projects, datasets, timeline)
       // La portada se cerró ("Read the portfolio") antes de que el mapa cargara.
-      if (introRef.current === 'done') instance.jumpTo(LAB_CAMERA)
+      if (introRef.current === 'done') instance.jumpTo(landingCamera())
       setMap(instance)
     })
 
@@ -173,7 +177,7 @@ export default function LabView({ profile, projects }: Props) {
     setRevealing(null)
     setLenses(ALL_LENSES)
     map?.stop()
-    map?.jumpTo(LAB_CAMERA)
+    map?.jumpTo(landingCamera())
   }, [map])
 
   const startExplore = () => {
@@ -186,7 +190,7 @@ export default function LabView({ profile, projects }: Props) {
     // Si el usuario toma el mapa a mitad de vuelo, 'moveend' llega igual y la
     // revelación ocurre donde haya quedado.
     map.once('moveend', () => setIntro((stage) => (stage === 'flying' ? 'reveal' : stage)))
-    map.flyTo({ ...LAB_CAMERA, duration: LANDING_FLY_MS, essential: true })
+    map.flyTo({ ...landingCamera(), duration: LANDING_FLY_MS, essential: true })
   }
 
   // Durante la portada y el vuelo, un pulso marca dónde se va a aterrizar.
@@ -368,6 +372,7 @@ export default function LabView({ profile, projects }: Props) {
       onToggleTileBoundaries={() => setTileBoundaries((v) => !v)}
       profileOpen={profileOpen}
       onToggleProfile={toggleProfile}
+      onClose={() => setLayersOpen(false)}
     />
   )
 
@@ -420,7 +425,7 @@ export default function LabView({ profile, projects }: Props) {
       {intro === 'reveal' && revealing && (
         <p
           key={revealing}
-          className="pointer-events-none absolute top-16 left-1/2 z-30 flex max-w-[calc(100%-2rem)] -translate-x-1/2 animate-scene-in items-center gap-2.5 rounded-xl border bg-lab-card/90 px-4 py-2 text-[13px] backdrop-blur-md md:top-[72px]"
+          className="pointer-events-none absolute top-[148px] left-1/2 z-30 flex max-w-[calc(100%-2rem)] -translate-x-1/2 animate-scene-in items-center gap-2.5 rounded-xl border bg-lab-card/90 px-4 py-2 text-[13px] backdrop-blur-md md:top-[72px]"
           style={{ borderColor: `${LENSES[revealing].color}80` }}
         >
           <i className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ background: LENSES[revealing].color }} />
@@ -447,21 +452,31 @@ export default function LabView({ profile, projects }: Props) {
           <div className="absolute inset-x-4 top-16 z-10 md:hidden">
             <IdentityCard profile={profile} />
           </div>
-          {!selected && !profileOpen && (
+          {!selected && !profileOpen && !layersOpen && (
             <button
               type="button"
-              onClick={() => setLayersOpen((o) => !o)}
-              className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 rounded-xl border border-lab-line bg-lab-card px-4 py-2 font-code text-[12px] text-lab-fg md:hidden"
+              onClick={() => setLayersOpen(true)}
+              className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 rounded-xl border border-lab-line bg-lab-card px-5 py-2.5 font-code text-[12px] text-lab-fg shadow-lg md:hidden"
             >
-              {layersOpen ? 'Close layers' : 'Layers · 3 lenses'}
+              Layers · 3 lenses
             </button>
           )}
           {layersOpen && !selected && !profileOpen && (
-            <div className="absolute inset-x-0 bottom-0 z-10 flex max-h-[62%] flex-col md:hidden">{layerPanel}</div>
+            <>
+              <button
+                type="button"
+                aria-label="Close layers"
+                onClick={() => setLayersOpen(false)}
+                className="absolute inset-0 z-[9] cursor-default md:hidden"
+              />
+              <div className="absolute inset-x-0 bottom-0 z-10 flex max-h-[64%] animate-modal-drawer-in flex-col md:hidden">
+                {layerPanel}
+              </div>
+            </>
           )}
 
           {selected && map && (
-            <div className="absolute inset-x-0 bottom-0 z-20 flex max-h-[70%] items-end md:inset-x-auto md:top-4 md:right-4 md:bottom-14 md:max-h-none md:w-[420px] md:items-start">
+            <div className="absolute inset-x-0 bottom-0 z-20 flex items-end md:inset-x-auto md:top-4 md:right-4 md:bottom-14 md:w-[420px] md:items-start">
               <Inspector
                 map={map}
                 project={selected}

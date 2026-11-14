@@ -195,3 +195,10 @@
 .lab[data-intro="flying"] .mapboxgl-ctrl-scale {
   display: none;
 }
+
+/* En pantallas táctiles angostas los botones de zoom sobran: se navega con gestos. */
+@media (max-width: 767px) {
+  .lab .mapboxgl-ctrl-group {
+    display: none;
+  }
+}

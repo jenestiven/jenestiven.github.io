@@ -14,6 +14,8 @@ type Props = {
   onToggleTileBoundaries: () => void
   profileOpen: boolean
   onToggleProfile: () => void
+  /** Cierra la hoja en móvil (en escritorio el panel es fijo). */
+  onClose: () => void
 }
 
 const STATUS_LABEL: Record<LabProject['status'], string> = {
@@ -39,11 +41,12 @@ export default function LayerPanel({
   onToggleTileBoundaries,
   profileOpen,
   onToggleProfile,
+  onClose,
 }: Props) {
   const allOn = LENS_ORDER.every((lens) => lenses[lens])
 
   return (
-    <section className="flex min-h-0 flex-col rounded-2xl border border-lab-line bg-lab-card/90 backdrop-blur-md">
+    <section className="flex min-h-0 flex-col rounded-t-2xl border border-lab-line bg-lab-card/95 backdrop-blur-md md:rounded-b-2xl md:bg-lab-card/90">
       <header className="flex items-center justify-between border-b border-lab-line px-4 py-3">
         <div>
           <p className="font-code text-[11px] tracking-[0.14em] text-lab-accent uppercase">// layers</p>
@@ -56,6 +59,14 @@ export default function LayerPanel({
           className="rounded-lg border border-lab-line px-2.5 py-1 font-code text-[11px] text-lab-muted transition enabled:hover:border-lab-accent enabled:hover:text-lab-fg disabled:opacity-40"
         >
           all at once
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close layers"
+          className="-mr-1 ml-2 rounded-lg px-2 py-1 text-lab-muted hover:bg-lab-bg2 hover:text-lab-fg md:hidden"
+        >
+          ✕
         </button>
       </header>
 
