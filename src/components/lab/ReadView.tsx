@@ -343,7 +343,12 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
             </a>
           </div>
         </div>
-        <footer className="py-9 pb-11 text-center font-code text-[13px] text-lab-muted">{profile.footer}</footer>
+        <footer className="py-9 pb-11 text-center font-code text-[13px] text-lab-muted">
+          {profile.footer} ·{' '}
+          <a href="/v1" className="underline underline-offset-4 hover:text-lab-fg">
+            Previous version (v1)
+          </a>
+        </footer>
       </div>
     </div>
   )

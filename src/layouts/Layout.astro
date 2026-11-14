@@ -3,16 +3,20 @@ import '../styles/global.css';
 
 interface Props {
 	title?: string;
+	description?: string;
+	/** Idioma del documento: la v1 va en español, la v2 en inglés. */
+	lang?: string;
 }
 
-const { title = 'Jhon Aricapa — Portafolio' } = Astro.props;
-
-const description =
-	'Portafolio interactivo de Jhon Aricapa: geomática, topografía y SIG aplicados junto a desarrollo de software.';
+const {
+	title = 'Jhon Aricapa — Portafolio',
+	description = 'Portafolio interactivo de Jhon Aricapa: geomática, topografía y SIG aplicados junto a desarrollo de software.',
+	lang = 'es',
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />

@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import MapView from '../components/map/MapView.tsx';
+import ContactWidget from '../components/ui/ContactWidget.tsx';
+import Layout from '../layouts/Layout.astro';
+import type { Scene } from '../types';
+
+// v1 del portafolio: el tour guiado en carrito por Cali, Londres y Tokio.
+// Queda congelada en /v1 (ver docs/ARQUITECTURA-addendum-v9.md); la portada
+// actual es la v2 de src/pages/index.astro.
+//
+// El orden del recorrido lo decide TOUR_ORDER en MapView.tsx, no el glob de
+// la colección: aquí solo se entregan las escenas disponibles.
+const entries = await getCollection('scenes');
+const scenes: Scene[] = entries.map((entry) => entry.data);
+---
+
+<Layout title="Jhon Aricapa — Portafolio v1 (tour guiado)">
+	<!-- Mapa a pantalla completa: una sola instancia, sin scroll de página. -->
+	<div class="fixed inset-0 z-0">
+		<MapView scenes={scenes} client:load />
+	</div>
+
+	<!--
+		Contacto fuera del contenedor del mapa: es independiente de la escena
+		activa y del tour, y sobrevive a cualquier cambio dentro de MapView.
+	-->
+	<ContactWidget client:load />
+
+	<!-- Salida hacia la versión actual. Abajo a la izquierda, sobre el logo de Mapbox. -->
+	<a
+		href="/"
+		class="fixed bottom-10 left-3 z-[25] flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-xs font-medium text-white/80 shadow-lg backdrop-blur-md transition hover:bg-black/75 hover:text-white"
+	>
+		<span class="rounded-full bg-white/15 px-1.5 py-0.5 text-[10px] tracking-wider">V1</span>
+		Versión anterior · Ir a la actual →
+	</a>
+</Layout>

@@ -153,9 +153,12 @@ export default function LayerPanel({
         })}
       </div>
 
-      <p className="border-t border-lab-line px-4 py-2.5 text-[11.5px] leading-snug text-lab-muted">
-        Project geometries are synthetic and illustrative. Client data stays private.
-      </p>
+      <div className="border-t border-lab-line px-4 py-2.5 text-[11.5px] leading-snug text-lab-muted">
+        <p>Project geometries are synthetic and illustrative. Client data stays private.</p>
+        <a href="/v1" className="mt-1.5 inline-block font-code text-[11px] hover:text-lab-fg">
+          v1 · the guided-tour version →
+        </a>
+      </div>
     </section>
   )
 }

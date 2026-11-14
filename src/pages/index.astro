@@ -1,25 +1,40 @@
 ---
 import { getCollection } from 'astro:content';
-import MapView from '../components/map/MapView.tsx';
-import ContactWidget from '../components/ui/ContactWidget.tsx';
+import LabView from '../components/lab/LabView.tsx';
 import Layout from '../layouts/Layout.astro';
-import type { Scene } from '../types';
+import type { LabProfile, LabProject } from '../types';
 
-// El orden del recorrido lo decide TOUR_ORDER en MapView.tsx, no el glob de
-// la colección: aquí solo se entregan las escenas disponibles.
-const entries = await getCollection('scenes');
-const scenes: Scene[] = entries.map((entry) => entry.data);
+// v2 del portafolio (addendums v8 y v9): un solo mapa, tres lentes, y
+// jenestiven.github.io integrado como vista Leer. La v1 vive en /v1.
+const projects: LabProject[] = (await getCollection('projects'))
+	.map((entry) => entry.data)
+	.filter((project) => !project.draft)
+	.sort((a, b) => a.order - b.order);
+
+const profileEntry = (await getCollection('profile')).find((entry) => entry.data.id === 'main');
+if (!profileEntry) throw new Error('Falta src/content/profile/main.json');
+const profile: LabProfile = profileEntry.data;
 ---
 
-<Layout>
-	<!-- Mapa a pantalla completa: una sola instancia, sin scroll de página. -->
-	<div class="fixed inset-0 z-0">
-		<MapView scenes={scenes} client:load />
+<Layout
+	title="Jhon González Aricapa · Topographer, GIS & Software Developer"
+	description="Topographer, GIS developer and software developer. One interactive map with three lenses: surveying, geospatial analysis and the software built on top of them. Cali, Colombia."
+	lang="en"
+>
+	<Fragment slot="head">
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+		/>
+		<!--
+			Un enlace con hash (#read, #<proyecto>) va directo a su destino: la
+			portada se oculta antes del primer pintado para que no parpadee.
+		-->
+		<script is:inline>
+			if (location.hash.length > 1) document.documentElement.classList.add('lab-skip-intro');
+		</script>
+	</Fragment>
+	<div class="fixed inset-0">
+		<LabView profile={profile} projects={projects} client:load />
 	</div>
-
-	<!--
-		Contacto fuera del contenedor del mapa: es independiente de la escena
-		activa y del tour, y sobrevive a cualquier cambio dentro de MapView.
-	-->
-	<ContactWidget client:load />
 </Layout>
