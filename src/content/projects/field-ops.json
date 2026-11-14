@@ -1,6 +1,6 @@
 {
   "id": "field-ops",
-  "title": "Field Operations Monorepo",
+  "title": "ATG Force - Field Operations Monorepo",
   "order": 4,
   "featured": true,
   "lens": "software",
@@ -28,7 +28,7 @@
     "note": "Illustrative crew routes from a base yard. Not real tracks."
   },
   "es": {
-    "title": "Monorepo de operaciones de campo",
+    "title": "ATG Force - Monorepo de operaciones de campo",
     "tag": "Construcción · Contrato, luego freelance",
     "meta": "ATG Force · Contrato, luego freelance",
     "summary": "Sistema web y móvil para un subcontratista de construcción: trabajos, programación, hojas de trabajo, control de tiempo con GPS y foto, y nómina.",

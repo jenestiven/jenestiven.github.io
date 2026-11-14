@@ -42,7 +42,7 @@
   --color-lab-accent: var(--lab-accent);
   --color-lab-accent2: var(--lab-accent2);
   --color-lab-accent3: var(--lab-accent3);
-  --font-display: "Space Grotesk", Inter, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", Inter, system-ui, sans-serif;
   --font-inter: Inter, system-ui, sans-serif;
   --font-code: "JetBrains Mono", ui-monospace, Menlo, monospace;
 }

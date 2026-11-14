@@ -7,9 +7,9 @@
   "status": "production",
   "tag": "Precision agriculture · 2026",
   "meta": "Ingenio Manuelita S.A., one of Colombia's largest sugarcane producers",
-  "summary": "A local-first desktop platform that centralizes the sugarcane productivity-mapping workflow in one place.",
+  "summary": "A local-first desktop platform that centralizes Ingenio Manuelita's precision agriculture processes, with modules for productivity maps, in-house and contractor fertilization, and web map viewers.",
   "points": [
-    "A local-first desktop platform that centralizes the sugarcane productivity-mapping workflow in one place.",
+    "A local-first desktop platform that centralizes Ingenio Manuelita's precision agriculture processes, with modules for productivity maps, in-house and contractor fertilization, and web map viewers.",
     "I built the FastAPI + Pydantic API over 9 sprints, with one unified lot data model shared by every workflow stage.",
     "It pulls in data from Solinftec, Biosalc and NAX. I reverse-engineered the Biosalc TXT format and wrote a normalization algorithm for its productivity data.",
     "I also built a QGIS/PyQGIS map pipeline alongside the ArcGIS/ArcPy one, using SAGA B-spline interpolation, Jenks classification and automated layouts.",
@@ -122,9 +122,9 @@
   "es": {
     "tag": "Agricultura de precisión · 2026",
     "meta": "Ingenio Manuelita S.A., uno de los mayores productores de caña de azúcar de Colombia",
-    "summary": "Plataforma de escritorio local-first que centraliza en un solo lugar el flujo de mapeo de productividad de la caña de azúcar.",
+    "summary": "Plataforma de escritorio local-first que centraliza los procesos del área de agricultura de precisión del Ingenio Manuelita, con módulos de mapas de productividad, fertilización propia y contratista, y geovisores.",
     "points": [
-      "Plataforma de escritorio local-first que centraliza en un solo lugar el flujo de mapeo de productividad de la caña de azúcar.",
+      "Plataforma de escritorio local-first que centraliza los procesos del área de agricultura de precisión del Ingenio Manuelita, con módulos de mapas de productividad, fertilización propia y contratista, y geovisores.",
       "Construí la API en FastAPI + Pydantic a lo largo de 9 sprints, con un único modelo de datos de lote compartido por todas las etapas del flujo.",
       "Integra datos de Solinftec, Biosalc y NAX. Descifré por ingeniería inversa el formato TXT de Biosalc y escribí un algoritmo de normalización para sus datos de productividad.",
       "También construí un pipeline de mapas en QGIS/PyQGIS en paralelo al de ArcGIS/ArcPy, con interpolación B-spline de SAGA, clasificación de Jenks y layouts automatizados.",

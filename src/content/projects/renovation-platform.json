@@ -1,13 +1,13 @@
 {
   "id": "renovation-platform",
-  "title": "Renovation Management Platform",
+  "title": "Mihoapp - All-in-one construction management platform",
   "order": 2,
   "featured": true,
   "lens": "software",
   "status": "production",
   "tag": "Operations platform · 2023 – 2026",
   "meta": "Justo Pago Remodelaciones · 2023 – 2026",
-  "summary": "An end-to-end operations platform for a renovation company. I joined as Junior Dev & QA and was promoted to Full Stack.",
+  "summary": "An end-to-end operations platform for the renovation company Justo Pago Remodelaciones. I joined as Junior Dev & QA and was promoted to Full Stack.",
   "impact": "Used by ~50 people to run 400+ active projects",
   "points": [
     "Inventory, purchasing and finance modules, covering budgets, client payments and cash flow",
@@ -31,9 +31,9 @@
     "note": "Illustrative job sites (active / closed). Positions are random, not client addresses."
   },
   "es": {
-    "title": "Plataforma de gestión de remodelaciones",
+    "title": "Mihoapp - Plataforma de gestión integral de obra",
     "tag": "Plataforma de operaciones · 2023 – 2026",
-    "summary": "Plataforma de operaciones de punta a punta para una empresa de remodelaciones. Entré como desarrollador junior y QA, y fui ascendido a Full Stack.",
+    "summary": "Plataforma de operaciones de punta a punta para la empresa de remodelaciones llamada Justo Pago Remodelaciones. Entré como desarrollador junior y QA, y fui ascendido a Full Stack.",
     "impact": "La usan unas 50 personas para llevar más de 400 proyectos activos",
     "points": [
       "Módulos de inventario, compras y finanzas: presupuestos, pagos de clientes y flujo de caja",
