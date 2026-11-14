@@ -4,6 +4,15 @@ import type { FogSpecification, LngLatBoundsLike, Map, MapMouseEvent } from 'map
 import { initMap, type MapCamera } from '../../lib/map/initMap'
 import { elevationAt } from '../../lib/lab/dem'
 import { formatMeters } from '../../lib/lab/elevationProfile'
+import {
+  LANG_STORAGE_KEY,
+  LabI18nContext,
+  STRINGS,
+  detectLang,
+  localizeProfile,
+  localizeProject,
+  type Lang,
+} from '../../lib/lab/i18n'
 import { addLabLayers, applyVisibility, type LabRegistry } from '../../lib/lab/labLayers'
 import { LENSES, LENS_ORDER } from '../../lib/lab/lenses'
 import { bboxOf, buildProjectData, buildTraverse } from '../../lib/lab/syntheticGeometry'
@@ -11,6 +20,7 @@ import type { LabProfile, LabProject, Lens } from '../../types'
 import IdentityCard from './IdentityCard'
 import Inspector, { type PickedFeature } from './Inspector'
 import IntroOverlay from './IntroOverlay'
+import LangToggle from './LangToggle'
 import LayerPanel from './LayerPanel'
 import ProfilePanel from './ProfilePanel'
 import ReadView from './ReadView'
@@ -38,7 +48,10 @@ const LAB_CAMERA: MapCamera = { center: [-76.505, 3.425], zoom: 11.6, pitch: 50,
 const landingCamera = (): MapCamera =>
   window.innerWidth < 768 ? { ...LAB_CAMERA, center: [-76.5, 3.432], zoom: 10.3, pitch: 36 } : LAB_CAMERA
 
-/** Standard en noche + monocromo: el mapa base se apaga para que las lentes pongan el color. */
+/**
+ * Standard en noche + monocromo: el mapa base se apaga para que las lentes
+ * pongan el color. (Se probó Standard de día y se descartó.)
+ */
 const LAB_BASEMAP = {
   basemap: {
     lightPreset: 'night',
@@ -117,6 +130,29 @@ export default function LabView({ profile, projects }: Props) {
   /** Proyecto pedido antes de que el mapa terminara de cargar (desde Leer o el hash). */
   const pendingRef = useRef<string | null>(null)
   const isDesktop = useIsDesktop()
+
+  // Idioma. El HTML del servidor sale en inglés; al montar se cambia al
+  // preferido (guardado, o el del navegador).
+  const [lang, setLangState] = useState<Lang>('en')
+  const setLang = useCallback((next: Lang) => {
+    setLangState(next)
+    document.documentElement.lang = next
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, next)
+    } catch {
+      // Sin almacenamiento: el idioma vale solo para esta visita.
+    }
+  }, [])
+  useEffect(() => {
+    const preferred = detectLang()
+    setLangState(preferred)
+    document.documentElement.lang = preferred
+    document.documentElement.dataset.langReady = 'true'
+  }, [])
+  const i18n = useMemo(() => ({ lang, t: STRINGS[lang], setLang }), [lang, setLang])
+  const t = i18n.t
+  const profileL = useMemo(() => localizeProfile(profile, lang), [profile, lang])
+  const projectsL = useMemo(() => projects.map((p) => localizeProject(p, lang)), [projects, lang])
 
   /** Herramienta de perfil de elevación (lente Topógrafo). */
   const terrainProfile = useElevationProfile(map)
@@ -354,7 +390,7 @@ export default function LabView({ profile, projects }: Props) {
     fitTo(traverseBounds)
   }
 
-  const selected = projects.find((p) => p.id === selectedId) ?? null
+  const selected = projectsL.find((p) => p.id === selectedId) ?? null
   /** La interfaz del mapa aparece al aterrizar, no durante la portada ni el vuelo. */
   const chrome = intro === 'reveal' || intro === 'done'
 
@@ -363,7 +399,7 @@ export default function LabView({ profile, projects }: Props) {
       lenses={lenses}
       onToggleLens={toggleLens}
       onAllLenses={() => setLenses(ALL_LENSES)}
-      projects={projects}
+      projects={projectsL}
       hidden={hidden}
       onToggleProject={toggleProject}
       selectedId={selectedId}
@@ -377,6 +413,7 @@ export default function LabView({ profile, projects }: Props) {
   )
 
   return (
+    <LabI18nContext.Provider value={i18n}>
     <div className="lab relative h-full w-full overflow-hidden" data-intro={intro}>
       {/* h-full y no `absolute inset-0`: mapbox-gl.css fuerza position: relative en .mapboxgl-map. */}
       <div id="lab-map" className="h-full w-full" />
@@ -384,7 +421,7 @@ export default function LabView({ profile, projects }: Props) {
       {chrome && (
         <div
           role="group"
-          aria-label="View mode"
+          aria-label={t.mode.label}
           className="absolute top-3 left-1/2 z-40 flex -translate-x-1/2 animate-scene-in rounded-xl border border-lab-line bg-lab-card/90 p-1 font-code text-[12px] backdrop-blur-md md:top-4"
         >
           {(['explore', 'read'] as const).map((m) => (
@@ -397,15 +434,17 @@ export default function LabView({ profile, projects }: Props) {
                 mode === m ? 'bg-lab-accent text-[#06221a]' : 'text-lab-muted hover:text-lab-fg'
               }`}
             >
-              {m}
+              {t.mode[m]}
             </button>
           ))}
+          <span className="mx-1 w-px self-stretch bg-lab-line" />
+          <LangToggle />
         </div>
       )}
 
       {(intro === 'hero' || intro === 'flying') && (
         <IntroOverlay
-          profile={profile}
+          profile={profileL}
           leaving={intro === 'flying'}
           mapReady={map !== null}
           onExplore={startExplore}
@@ -418,7 +457,7 @@ export default function LabView({ profile, projects }: Props) {
 
       {intro === 'flying' && (
         <p className="pointer-events-none absolute bottom-12 left-1/2 z-30 -translate-x-1/2 animate-scene-in rounded-lg border border-lab-line bg-lab-card/85 px-3 py-1.5 font-code text-[11.5px] whitespace-nowrap text-lab-muted backdrop-blur-md">
-          Descending to Cali, Colombia · {profile.origin.label.split(' · ')[0]}
+          {t.intro.descending} · {profile.origin.label.split(' · ')[0]}
         </p>
       )}
 
@@ -431,10 +470,10 @@ export default function LabView({ profile, projects }: Props) {
           <i className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ background: LENSES[revealing].color }} />
           <span>
             <span className="font-code text-[11px] text-lab-muted">
-              Lens {LENS_ORDER.indexOf(revealing) + 1} of {LENS_ORDER.length} ·{' '}
+              {t.intro.lensOf(LENS_ORDER.indexOf(revealing) + 1, LENS_ORDER.length)} ·{' '}
             </span>
             <span className="font-display font-semibold" style={{ color: LENSES[revealing].color }}>
-              {LENSES[revealing].label}
+              {t.lenses[revealing].label}
             </span>
           </span>
         </p>
@@ -444,13 +483,13 @@ export default function LabView({ profile, projects }: Props) {
         <>
           {/* Escritorio: identidad + capas a la izquierda. */}
           <div className="absolute top-4 bottom-14 left-4 z-10 hidden w-[360px] animate-scene-in flex-col gap-3 md:flex">
-            <IdentityCard profile={profile} />
+            <IdentityCard profile={profileL} />
             {layerPanel}
           </div>
 
           {/* Móvil: identidad compacta arriba, capas en una hoja inferior. */}
           <div className="absolute inset-x-4 top-16 z-10 md:hidden">
-            <IdentityCard profile={profile} />
+            <IdentityCard profile={profileL} />
           </div>
           {!selected && !profileOpen && !layersOpen && (
             <button
@@ -458,14 +497,14 @@ export default function LabView({ profile, projects }: Props) {
               onClick={() => setLayersOpen(true)}
               className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 rounded-xl border border-lab-line bg-lab-card px-5 py-2.5 font-code text-[12px] text-lab-fg shadow-lg md:hidden"
             >
-              Layers · 3 lenses
+              {t.layers.open}
             </button>
           )}
           {layersOpen && !selected && !profileOpen && (
             <>
               <button
                 type="button"
-                aria-label="Close layers"
+                aria-label={t.layers.close}
                 onClick={() => setLayersOpen(false)}
                 className="absolute inset-0 z-[9] cursor-default md:hidden"
               />
@@ -511,7 +550,7 @@ export default function LabView({ profile, projects }: Props) {
                 ? `${Math.abs(cursor.lat).toFixed(5)}° ${cursor.lat >= 0 ? 'N' : 'S'} · ${Math.abs(cursor.lng).toFixed(5)}° ${
                     cursor.lng >= 0 ? 'E' : 'W'
                   }${cursor.ele !== null ? ` · ${formatMeters(cursor.ele)}` : ''}`
-                : 'WGS84 · move the cursor over the map'}
+                : t.hud.cursorHint}
             </div>
           </div>
 
@@ -524,7 +563,7 @@ export default function LabView({ profile, projects }: Props) {
 
           {!map && (
             <div className="absolute inset-0 z-0 grid place-items-center font-code text-[12px] text-lab-muted">
-              loading map…
+              {t.hud.loadingMap}
             </div>
           )}
         </>
@@ -532,8 +571,8 @@ export default function LabView({ profile, projects }: Props) {
 
       {mode === 'read' && (
         <ReadView
-          profile={profile}
-          projects={projects}
+          profile={profileL}
+          projects={projectsL}
           onExplore={() => switchMode('explore')}
           onViewOnMap={(id) => {
             switchMode('explore')
@@ -543,5 +582,6 @@ export default function LabView({ profile, projects }: Props) {
         />
       )}
     </div>
+    </LabI18nContext.Provider>
   )
 }

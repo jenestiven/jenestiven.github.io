@@ -14,11 +14,32 @@
     "A GIS sectorization map in Mapbox GL JS and a real-time project chat",
     "ZapSign e-signature, Twilio notifications and automated PDF contracts"
   ],
-  "stack": ["React", "Firebase", "Mapbox GL JS", "Twilio", "ZapSign"],
+  "stack": [
+    "React",
+    "Firebase",
+    "Mapbox GL JS",
+    "Twilio",
+    "ZapSign"
+  ],
   "icon": "building",
   "layer": {
     "kind": "points",
-    "anchor": [-76.532, 3.442],
+    "anchor": [
+      -76.532,
+      3.442
+    ],
     "note": "Illustrative job sites (active / closed). Positions are random, not client addresses."
+  },
+  "es": {
+    "title": "Plataforma de gestión de remodelaciones",
+    "tag": "Plataforma de operaciones · 2023 – 2026",
+    "summary": "Plataforma de operaciones de punta a punta para una empresa de remodelaciones. Entré como desarrollador junior y QA, y fui ascendido a Full Stack.",
+    "impact": "La usan unas 50 personas para llevar más de 400 proyectos activos",
+    "points": [
+      "Módulos de inventario, compras y finanzas: presupuestos, pagos de clientes y flujo de caja",
+      "Un mapa GIS de sectorización en Mapbox GL JS y un chat de proyecto en tiempo real",
+      "Firma electrónica con ZapSign, notificaciones con Twilio y contratos PDF automatizados"
+    ],
+    "layerNote": "Obras ilustrativas (activas / cerradas). Las posiciones son aleatorias, no direcciones de clientes."
   }
 }

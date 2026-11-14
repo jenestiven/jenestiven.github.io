@@ -1,4 +1,5 @@
 import type { LabProject, Lens } from '../../types'
+import { useI18n } from '../../lib/lab/i18n'
 import { LENSES, LENS_ORDER } from '../../lib/lab/lenses'
 
 type Props = {
@@ -16,12 +17,6 @@ type Props = {
   onToggleProfile: () => void
   /** Cierra la hoja en móvil (en escritorio el panel es fijo). */
   onClose: () => void
-}
-
-const STATUS_LABEL: Record<LabProject['status'], string> = {
-  production: 'in production',
-  delivered: 'delivered',
-  'in-progress': 'in progress',
 }
 
 /**
@@ -43,14 +38,15 @@ export default function LayerPanel({
   onToggleProfile,
   onClose,
 }: Props) {
+  const { t } = useI18n()
   const allOn = LENS_ORDER.every((lens) => lenses[lens])
 
   return (
     <section className="flex min-h-0 flex-col rounded-t-2xl border border-lab-line bg-lab-card/95 backdrop-blur-md md:rounded-b-2xl md:bg-lab-card/90">
       <header className="flex items-center justify-between border-b border-lab-line px-4 py-3">
         <div>
-          <p className="font-code text-[11px] tracking-[0.14em] text-lab-accent uppercase">// layers</p>
-          <h2 className="font-display text-base font-bold">Three lenses, one map</h2>
+          <p className="font-code text-[11px] tracking-[0.14em] text-lab-accent uppercase">{t.layers.eyebrow}</p>
+          <h2 className="font-display text-base font-bold">{t.layers.title}</h2>
         </div>
         <button
           type="button"
@@ -58,12 +54,12 @@ export default function LayerPanel({
           disabled={allOn}
           className="rounded-lg border border-lab-line px-2.5 py-1 font-code text-[11px] text-lab-muted transition enabled:hover:border-lab-accent enabled:hover:text-lab-fg disabled:opacity-40"
         >
-          all at once
+          {t.layers.all}
         </button>
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close layers"
+          aria-label={t.layers.close}
           className="-mr-1 ml-2 rounded-lg px-2 py-1 text-lab-muted hover:bg-lab-bg2 hover:text-lab-fg md:hidden"
         >
           ✕
@@ -71,8 +67,10 @@ export default function LayerPanel({
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
+
         {LENS_ORDER.map((lens) => {
           const def = LENSES[lens]
+          const text = t.lenses[lens]
           const on = lenses[lens]
           const lensProjects = projects.filter((p) => p.lens === lens)
           return (
@@ -95,14 +93,14 @@ export default function LayerPanel({
                 </span>
                 <span className="min-w-0">
                   <span className="block font-display text-[15px] font-semibold" style={{ color: on ? def.color : undefined }}>
-                    {def.label}
+                    {text.label}
                   </span>
-                  <span className="block text-[12.5px] leading-snug text-lab-muted">{def.description}</span>
+                  <span className="block text-[12.5px] leading-snug text-lab-muted">{text.description}</span>
                 </span>
               </button>
 
               <ul className={`mt-2 ml-12 flex flex-col gap-0.5 ${on ? '' : 'opacity-45'}`}>
-                {def.baseLayers.map((name) => (
+                {text.baseLayers.map((name) => (
                   <li key={name} className="flex items-center gap-2 font-code text-[11px] text-lab-muted">
                     <i className="h-px w-3" style={{ background: def.color }} />
                     {name}
@@ -124,9 +122,9 @@ export default function LayerPanel({
                         <path d="M3 18l5-7 4 4 4-8 5 11" strokeLinejoin="round" strokeLinecap="round" />
                         <path d="M3 21h18" strokeLinecap="round" />
                       </svg>
-                      {profileOpen ? 'Close elevation profile' : 'Cut an elevation profile'}
+                      {profileOpen ? t.layers.profileClose : t.layers.profileOpen}
                       <span className="ml-auto rounded-full border border-lab-line px-1.5 font-code text-[9.5px] text-lab-muted">
-                        tool
+                        {t.layers.tool}
                       </span>
                     </button>
                   </li>
@@ -161,7 +159,7 @@ export default function LayerPanel({
                         id={`lab-vis-${p.id}`}
                         checked={!hidden[p.id]}
                         onChange={() => onToggleProject(p.id)}
-                        aria-label={`Show ${p.title}`}
+                        aria-label={t.layers.show(p.title)}
                         className="h-3.5 w-3.5 shrink-0 cursor-pointer"
                         style={{ accentColor: def.color }}
                       />
@@ -180,7 +178,7 @@ export default function LayerPanel({
                             : { color: 'var(--lab-muted)', borderColor: 'var(--lab-line)' }
                         }
                       >
-                        {STATUS_LABEL[p.status]}
+                        {t.layers.status[p.status]}
                       </span>
                     </li>
                   )
@@ -192,9 +190,9 @@ export default function LayerPanel({
       </div>
 
       <div className="border-t border-lab-line px-4 py-2.5 text-[11.5px] leading-snug text-lab-muted">
-        <p>Project geometries are synthetic and illustrative. Client data stays private.</p>
+        <p>{t.layers.note}</p>
         <a href="/v1" className="mt-1.5 inline-block font-code text-[11px] hover:text-lab-fg">
-          v1 · the guided-tour version →
+          {t.layers.v1}
         </a>
       </div>
     </section>

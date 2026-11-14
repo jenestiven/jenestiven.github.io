@@ -5,32 +5,173 @@
   "fullName": "Jhon Steven González Aricapa",
   "role": "Topographer · GIS Developer · Software Developer",
   "photo": "/profile.jpeg",
-  "origin": { "label": "3.4516° N, 76.5320° W · CALI, CO", "coord": [-76.532, 3.4516] },
-  "headline": { "before": "I turn ", "highlight": "spatial data", "after": "into software people use." },
+  "origin": {
+    "label": "3.4516° N, 76.5320° W · CALI, CO",
+    "coord": [
+      -76.532,
+      3.4516
+    ]
+  },
+  "headline": {
+    "before": "I turn ",
+    "highlight": "spatial data",
+    "after": "into software people use."
+  },
   "lead": "I'm a GIS and Full Stack Developer. I build geospatial pipelines in Python (PyQGIS, ArcPy) and the products around them in FastAPI, React and TypeScript. My background is in topographic engineering, and I've spent 2+ years shipping production software for agro-industry, construction and insurance.",
   "stats": [
-    { "value": "400+", "label": "active projects managed on a platform I helped build" },
-    { "value": "~50", "label": "daily operational users on my software" },
-    { "value": "9", "label": "sprints to deliver the Manuelita Smart API" },
-    { "value": "3", "label": "agricultural data sources integrated (Solinftec, Biosalc, NAX)" }
+    {
+      "value": "400+",
+      "label": "active projects managed on a platform I helped build"
+    },
+    {
+      "value": "~50",
+      "label": "daily operational users on my software"
+    },
+    {
+      "value": "9",
+      "label": "sprints to deliver the Manuelita Smart API"
+    },
+    {
+      "value": "3",
+      "label": "agricultural data sources integrated (Solinftec, Biosalc, NAX)"
+    }
   ],
   "workNote": "Most of my work is private client software, so the code and live demos aren't public. I'm happy to walk through any of these in an interview.",
   "skills": [
-    { "group": "Geospatial", "items": ["PyQGIS", "ArcPy", "QGIS", "ArcGIS", "SAGA", "Mapbox GL JS", "CRS / datums", "Sentinel-2"] },
-    { "group": "Backend", "items": ["Python", "FastAPI", "Pydantic", "Node.js", "Express", "REST APIs", "PostgreSQL", "SQLite", "Firestore"] },
-    { "group": "Frontend", "items": ["React", "TypeScript", "Next.js", "Vite", "Tailwind", "React Native"] },
-    { "group": "Surveying", "items": ["GNSS RTK/PPK", "Total station", "UAV photogrammetry", "Civil 3D"] },
-    { "group": "Ship & deploy", "items": ["Git", "Vercel", "Railway", "Cloudflare R2", "Firebase", "Turborepo"] },
-    { "group": "Ways of working", "items": ["End-to-end ownership", "Sprints", "Technical docs", "Claude Code"] }
+    {
+      "group": "Geospatial",
+      "items": [
+        "PyQGIS",
+        "ArcPy",
+        "QGIS",
+        "ArcGIS",
+        "SAGA",
+        "Mapbox GL JS",
+        "CRS / datums",
+        "Sentinel-2"
+      ]
+    },
+    {
+      "group": "Backend",
+      "items": [
+        "Python",
+        "FastAPI",
+        "Pydantic",
+        "Node.js",
+        "Express",
+        "REST APIs",
+        "PostgreSQL",
+        "SQLite",
+        "Firestore"
+      ]
+    },
+    {
+      "group": "Frontend",
+      "items": [
+        "React",
+        "TypeScript",
+        "Next.js",
+        "Vite",
+        "Tailwind",
+        "React Native"
+      ]
+    },
+    {
+      "group": "Surveying",
+      "items": [
+        "GNSS RTK/PPK",
+        "Total station",
+        "UAV photogrammetry",
+        "Civil 3D"
+      ]
+    },
+    {
+      "group": "Ship & deploy",
+      "items": [
+        "Git",
+        "Vercel",
+        "Railway",
+        "Cloudflare R2",
+        "Firebase",
+        "Turborepo"
+      ]
+    },
+    {
+      "group": "Ways of working",
+      "items": [
+        "End-to-end ownership",
+        "Sprints",
+        "Technical docs",
+        "Claude Code"
+      ]
+    }
   ],
   "timeline": [
-    { "code": "E6", "when": "JUN 2026 – DEC 2026", "title": "Precision Agriculture Intern, Software & GIS", "org": "Ingenio Manuelita S.A.", "station": [-76.505, 3.474] },
-    { "code": "E5", "when": "JUL 2025 – DEC 2025", "title": "Full Stack Developer (Freelance)", "org": "Automotive inspection center: SOAT sales SaaS", "station": [-76.523, 3.456] },
-    { "code": "E4", "when": "DEC 2024 – FEB 2026", "title": "Full Stack Developer", "org": "Justo Pago Remodelaciones", "station": [-76.544, 3.439] },
-    { "code": "E3", "when": "DEC 2023 – DEC 2024", "title": "Junior Developer & QA", "org": "Justo Pago Remodelaciones (promoted)", "station": [-76.53, 3.418] },
-    { "when": "CONTRACT + FREELANCE", "title": "Software Developer", "org": "ATG Force" },
-    { "code": "E1", "when": "2019 – PRESENT", "title": "B.Eng. Topographic Engineering (thesis stage)", "org": "Universidad del Valle. The program is now called Geomatics Engineering.", "station": [-76.53445, 3.37501] },
-    { "code": "E2", "when": "2022 – PRESENT", "title": "Software Development Technology (in progress)", "org": "Universidad del Valle · Spanish (native) · English (B2, certified)", "station": [-76.5395, 3.3985] }
+    {
+      "code": "E6",
+      "when": "JUN 2026 – DEC 2026",
+      "title": "Precision Agriculture Intern, Software & GIS",
+      "org": "Ingenio Manuelita S.A.",
+      "station": [
+        -76.505,
+        3.474
+      ]
+    },
+    {
+      "code": "E5",
+      "when": "JUL 2025 – DEC 2025",
+      "title": "Full Stack Developer (Freelance)",
+      "org": "Automotive inspection center: SOAT sales SaaS",
+      "station": [
+        -76.523,
+        3.456
+      ]
+    },
+    {
+      "code": "E4",
+      "when": "DEC 2024 – FEB 2026",
+      "title": "Full Stack Developer",
+      "org": "Justo Pago Remodelaciones",
+      "station": [
+        -76.544,
+        3.439
+      ]
+    },
+    {
+      "code": "E3",
+      "when": "DEC 2023 – DEC 2024",
+      "title": "Junior Developer & QA",
+      "org": "Justo Pago Remodelaciones (promoted)",
+      "station": [
+        -76.53,
+        3.418
+      ]
+    },
+    {
+      "when": "CONTRACT + FREELANCE",
+      "title": "Software Developer",
+      "org": "ATG Force"
+    },
+    {
+      "code": "E1",
+      "when": "2019 – PRESENT",
+      "title": "B.Eng. Topographic Engineering (thesis stage)",
+      "org": "Universidad del Valle. The program is now called Geomatics Engineering.",
+      "station": [
+        -76.53445,
+        3.37501
+      ]
+    },
+    {
+      "code": "E2",
+      "when": "2022 – PRESENT",
+      "title": "Software Development Technology (in progress)",
+      "org": "Universidad del Valle · Spanish (native) · English (B2, certified)",
+      "station": [
+        -76.5395,
+        3.3985
+      ]
+    }
   ],
   "contact": {
     "title": "Open to GIS and full stack roles",
@@ -39,5 +180,143 @@
     "linkedin": "https://www.linkedin.com/in/jhon-aricapa/",
     "github": "https://github.com/jenestiven"
   },
-  "footer": "© 2026 Jhon Steven González Aricapa"
+  "footer": "© 2026 Jhon Steven González Aricapa",
+  "es": {
+    "role": "Topógrafo · Desarrollador GIS · Desarrollador de software",
+    "headline": {
+      "before": "Convierto ",
+      "highlight": "datos espaciales",
+      "after": "en software que la gente usa."
+    },
+    "lead": "Soy desarrollador GIS y Full Stack. Construyo pipelines geoespaciales en Python (PyQGIS, ArcPy) y los productos a su alrededor en FastAPI, React y TypeScript. Vengo de la ingeniería topográfica y llevo más de 2 años entregando software en producción para la agroindustria, la construcción y los seguros.",
+    "stats": [
+      {
+        "value": "400+",
+        "label": "proyectos activos gestionados en una plataforma que ayudé a construir"
+      },
+      {
+        "value": "~50",
+        "label": "usuarios operativos diarios de mi software"
+      },
+      {
+        "value": "9",
+        "label": "sprints para entregar la API de Manuelita Smart"
+      },
+      {
+        "value": "3",
+        "label": "fuentes de datos agrícolas integradas (Solinftec, Biosalc, NAX)"
+      }
+    ],
+    "workNote": "La mayor parte de mi trabajo es software privado de clientes, así que el código y las demos no son públicos. Con gusto recorro cualquiera de estos proyectos en una entrevista.",
+    "skills": [
+      {
+        "group": "Geoespacial",
+        "items": [
+          "PyQGIS",
+          "ArcPy",
+          "QGIS",
+          "ArcGIS",
+          "SAGA",
+          "Mapbox GL JS",
+          "CRS / datums",
+          "Sentinel-2"
+        ]
+      },
+      {
+        "group": "Backend",
+        "items": [
+          "Python",
+          "FastAPI",
+          "Pydantic",
+          "Node.js",
+          "Express",
+          "APIs REST",
+          "PostgreSQL",
+          "SQLite",
+          "Firestore"
+        ]
+      },
+      {
+        "group": "Frontend",
+        "items": [
+          "React",
+          "TypeScript",
+          "Next.js",
+          "Vite",
+          "Tailwind",
+          "React Native"
+        ]
+      },
+      {
+        "group": "Topografía",
+        "items": [
+          "GNSS RTK/PPK",
+          "Estación total",
+          "Fotogrametría con UAV",
+          "Civil 3D"
+        ]
+      },
+      {
+        "group": "Despliegue",
+        "items": [
+          "Git",
+          "Vercel",
+          "Railway",
+          "Cloudflare R2",
+          "Firebase",
+          "Turborepo"
+        ]
+      },
+      {
+        "group": "Forma de trabajo",
+        "items": [
+          "Responsabilidad de punta a punta",
+          "Sprints",
+          "Documentación técnica",
+          "Claude Code"
+        ]
+      }
+    ],
+    "timeline": [
+      {
+        "when": "JUN 2026 – DIC 2026",
+        "title": "Practicante de Agricultura de Precisión, Software y GIS",
+        "org": "Ingenio Manuelita S.A."
+      },
+      {
+        "when": "JUL 2025 – DIC 2025",
+        "title": "Desarrollador Full Stack (freelance)",
+        "org": "Centro de diagnóstico automotor: SaaS de venta de SOAT"
+      },
+      {
+        "when": "DIC 2024 – FEB 2026",
+        "title": "Desarrollador Full Stack",
+        "org": "Justo Pago Remodelaciones"
+      },
+      {
+        "when": "DIC 2023 – DIC 2024",
+        "title": "Desarrollador Junior y QA",
+        "org": "Justo Pago Remodelaciones (ascendido)"
+      },
+      {
+        "when": "CONTRATO + FREELANCE",
+        "title": "Desarrollador de software",
+        "org": "ATG Force"
+      },
+      {
+        "when": "2019 – PRESENTE",
+        "title": "Ingeniería Topográfica (etapa de tesis)",
+        "org": "Universidad del Valle. El programa hoy se llama Ingeniería Geomática."
+      },
+      {
+        "when": "2022 – PRESENTE",
+        "title": "Tecnología en Desarrollo de Software (en curso)",
+        "org": "Universidad del Valle · Español (nativo) · Inglés (B2, certificado)"
+      }
+    ],
+    "contact": {
+      "title": "Abierto a roles GIS y full stack",
+      "body": "Me interesan roles remotos, y también híbridos o presenciales en Colombia y Europa."
+    }
+  }
 }

@@ -136,8 +136,25 @@ const projects = defineCollection({
       anchor: lngLat,
       note: z.string(),
     }),
+    /** Textos en español. Lo que falte cae al inglés. */
+    es: z
+      .object({
+        title: z.string().optional(),
+        tag: z.string().optional(),
+        meta: z.string().optional(),
+        summary: z.string().optional(),
+        impact: z.string().optional(),
+        points: z.array(z.string()).optional(),
+        diagram: archDiagramSchema.optional(),
+        layerNote: z.string().optional(),
+      })
+      .optional(),
   }),
 })
+
+const headlineSchema = z.object({ before: z.string(), highlight: z.string(), after: z.string() })
+const statsSchema = z.array(z.object({ value: z.string(), label: z.string() }))
+const skillsSchema = z.array(z.object({ group: z.string(), items: z.array(z.string()) }))
 
 const profile = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/profile' }),
@@ -149,11 +166,11 @@ const profile = defineCollection({
     role: z.string(),
     photo: z.string(),
     origin: z.object({ label: z.string(), coord: lngLat }),
-    headline: z.object({ before: z.string(), highlight: z.string(), after: z.string() }),
+    headline: headlineSchema,
     lead: z.string(),
-    stats: z.array(z.object({ value: z.string(), label: z.string() })),
+    stats: statsSchema,
     workNote: z.string(),
-    skills: z.array(z.object({ group: z.string(), items: z.array(z.string()) })),
+    skills: skillsSchema,
     timeline: z.array(
       z.object({
         code: z.string().optional(),
@@ -171,6 +188,19 @@ const profile = defineCollection({
       github: z.string(),
     }),
     footer: z.string(),
+    /** Textos en español. Lo que falte cae al inglés. */
+    es: z
+      .object({
+        role: z.string().optional(),
+        headline: headlineSchema.optional(),
+        lead: z.string().optional(),
+        stats: statsSchema.optional(),
+        workNote: z.string().optional(),
+        skills: skillsSchema.optional(),
+        timeline: z.array(z.object({ when: z.string(), title: z.string(), org: z.string() })).optional(),
+        contact: z.object({ title: z.string(), body: z.string() }).optional(),
+      })
+      .optional(),
   }),
 })
 

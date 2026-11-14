@@ -1,4 +1,5 @@
 import type { LabProfile } from '../../types'
+import { useI18n } from '../../lib/lab/i18n'
 import { LENSES, LENS_ORDER } from '../../lib/lab/lenses'
 
 type Props = {
@@ -7,12 +8,13 @@ type Props = {
 
 /** Tarjeta de identidad del modo Explorar: quién es, dónde está y sus tres perfiles. */
 export default function IdentityCard({ profile }: Props) {
+  const { t } = useI18n()
   return (
     <section className="rounded-2xl border border-lab-line bg-lab-card/90 p-4 backdrop-blur-md">
       <div className="flex items-center gap-3">
         <img
           src={profile.photo}
-          alt={`Foto de ${profile.shortName}`}
+          alt={t.photoAlt(profile.shortName)}
           className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-lab-accent/40"
         />
         <div className="min-w-0">
@@ -26,7 +28,7 @@ export default function IdentityCard({ profile }: Props) {
 
       <p className="mt-3 hidden font-display text-[17px] leading-snug font-semibold tracking-tight md:block">
         {profile.headline.before}
-        <span className="bg-gradient-to-r from-lab-accent to-lab-accent3 bg-clip-text text-transparent">
+        <span className="bg-linear-to-r from-lab-accent to-lab-accent3 bg-clip-text text-transparent">
           {profile.headline.highlight}
         </span>{' '}
         {profile.headline.after}
@@ -35,8 +37,8 @@ export default function IdentityCard({ profile }: Props) {
       <ul className="mt-3 hidden flex-wrap gap-x-3 gap-y-1 md:flex">
         {LENS_ORDER.map((lens) => (
           <li key={lens} className="flex items-center gap-1.5 font-code text-[11px] text-lab-muted">
-            <i className="h-2 w-2 rounded-[2px]" style={{ background: LENSES[lens].color }} />
-            {LENSES[lens].label}
+            <i className="h-2 w-2 rounded-xs" style={{ background: LENSES[lens].color }} />
+            {t.lenses[lens].label}
           </li>
         ))}
       </ul>
@@ -46,7 +48,7 @@ export default function IdentityCard({ profile }: Props) {
           href={`mailto:${profile.contact.email}`}
           className="rounded-lg bg-lab-accent px-3 py-1.5 text-[13px] font-semibold text-[#06221a] transition hover:-translate-y-0.5"
         >
-          Email me
+          {t.identity.email}
         </a>
         <a
           href={profile.contact.linkedin}

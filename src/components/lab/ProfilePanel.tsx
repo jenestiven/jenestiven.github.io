@@ -7,6 +7,7 @@ import {
   niceStep,
   type Profile,
 } from '../../lib/lab/elevationProfile'
+import { useI18n } from '../../lib/lab/i18n'
 import { LENSES } from '../../lib/lab/lenses'
 import type { ElevationProfileTool } from './useElevationProfile'
 
@@ -27,47 +28,49 @@ const smallButton =
 /** Panel de la herramienta de perfil: estado del dibujo, cifras, gráfica y tabla. */
 export default function ProfilePanel({ tool }: Props) {
   const { profile, status, vertices, active } = tool
+  const { t } = useI18n()
+  const p = t.profile
   const [view, setView] = useState<'chart' | 'table'>('chart')
 
   return (
     <section
-      aria-label="Elevation profile"
+      aria-label={p.title}
       className="pointer-events-auto flex w-full flex-col rounded-t-2xl border border-lab-line bg-lab-card/95 backdrop-blur-md md:rounded-2xl"
     >
       <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-lab-line px-4 py-2.5">
         <h2 className="flex items-center gap-2 font-display text-[15px] font-semibold">
           <i className="h-0.5 w-4 rounded-full" style={{ background: SERIES }} />
-          Elevation profile
+          {p.title}
         </h2>
         <div className="ml-auto flex flex-wrap items-center gap-1.5">
           {profile && (
-            <div role="group" aria-label="View" className="flex rounded-lg border border-lab-line p-0.5 font-code text-[11px]">
+            <div role="group" aria-label={p.view} className="flex rounded-lg border border-lab-line p-0.5 font-code text-[11px]">
               {(['chart', 'table'] as const).map((v) => (
                 <button
                   key={v}
                   type="button"
                   aria-pressed={view === v}
                   onClick={() => setView(v)}
-                  className={`rounded-md px-2 py-0.5 capitalize transition ${
+                  className={`rounded-md px-2 py-0.5 transition ${
                     view === v ? 'bg-lab-bg2 text-lab-fg' : 'text-lab-muted hover:text-lab-fg'
                   }`}
                 >
-                  {v}
+                  {p[v]}
                 </button>
               ))}
             </div>
           )}
           <button type="button" onClick={tool.undo} disabled={vertices.length === 0} className={smallButton}>
-            Undo point
+            {p.undo}
           </button>
           <button
             type="button"
             onClick={active ? tool.finish : tool.resume}
             className={`${smallButton} ${active ? 'border-lab-accent2/70 text-lab-fg' : ''}`}
           >
-            {active ? 'Stop drawing' : 'Add points'}
+            {active ? p.stop : p.add}
           </button>
-          <button type="button" onClick={tool.close} aria-label="Close elevation profile" className={smallButton}>
+          <button type="button" onClick={tool.close} aria-label={p.close} className={smallButton}>
             ✕
           </button>
         </div>
@@ -75,29 +78,29 @@ export default function ProfilePanel({ tool }: Props) {
 
       {status === 'error' ? (
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 text-[13.5px]">
-          <p>Couldn't load the elevation data. Check your connection and try again.</p>
+          <p>{p.error}</p>
           <button type="button" onClick={tool.retry} className={smallButton}>
-            Retry
+            {p.retry}
           </button>
         </div>
       ) : !profile ? (
         <p className="px-4 py-5 text-[13.5px] text-lab-muted">
           {status === 'loading'
-            ? 'Reading Mapbox Terrain-DEM…'
+            ? p.reading
             : vertices.length === 1
-              ? 'Start point set. Click a second point to cut the profile.'
-              : 'Click two or more points on the map to cut a terrain profile along that line.'}
+              ? p.onePoint
+              : p.empty}
         </p>
       ) : (
         <>
           <dl className="grid grid-cols-3 gap-x-4 gap-y-2 px-4 pt-3 sm:grid-cols-6">
             {[
-              ['Length', formatLength(profile.length)],
-              ['Lowest', formatMeters(profile.min.ele)],
-              ['Highest', formatMeters(profile.max.ele)],
-              ['Ascent', `+${formatMeters(profile.ascent)}`],
-              ['Descent', `−${formatMeters(profile.descent)}`],
-              ['Avg. grade', `${(((profile.ascent + profile.descent) / profile.length) * 100).toFixed(1)}%`],
+              [p.length, formatLength(profile.length)],
+              [p.lowest, formatMeters(profile.min.ele)],
+              [p.highest, formatMeters(profile.max.ele)],
+              [p.ascent, `+${formatMeters(profile.ascent)}`],
+              [p.descent, `−${formatMeters(profile.descent)}`],
+              [p.avgGrade, `${(((profile.ascent + profile.descent) / profile.length) * 100).toFixed(1)}%`],
             ].map(([label, value]) => (
               <div key={label}>
                 <dt className="font-code text-[9.5px] tracking-wider text-lab-muted uppercase">{label}</dt>
@@ -116,8 +119,7 @@ export default function ProfilePanel({ tool }: Props) {
           </div>
 
           <p className="px-4 pb-2.5 font-code text-[10px] text-lab-muted">
-            Mapbox Terrain-DEM v1 · zoom {profile.demZoom} · {profile.samples.length} samples, one every{' '}
-            {(profile.length / (profile.samples.length - 1)).toFixed(1)} m
+            {p.source(profile.demZoom, profile.samples.length, (profile.length / (profile.samples.length - 1)).toFixed(1))}
           </p>
         </>
       )}
@@ -136,6 +138,7 @@ type ChartProps = {
 }
 
 function ProfileChart({ profile, hover, onHover }: ChartProps) {
+  const p = useI18n().t.profile
   const wrapRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
 
@@ -206,7 +209,7 @@ function ProfileChart({ profile, hover, onHover }: ChartProps) {
       ref={wrapRef}
       tabIndex={0}
       role="group"
-      aria-label="Elevation profile chart. Use the arrow keys to read the elevation along the line."
+      aria-label={p.chartLabel}
       onKeyDown={onKey}
       onBlur={() => onHover(null)}
       className="relative mx-1 rounded-lg focus-visible:outline-2 focus-visible:outline-lab-accent2"
@@ -215,10 +218,10 @@ function ProfileChart({ profile, hover, onHover }: ChartProps) {
       {width > 0 && (
         <svg width={width} height={CHART_HEIGHT} aria-hidden="true" className="block">
           <text x={4} y={12} {...AXIS_TEXT}>
-            Elevation (m)
+            {p.axis}
           </text>
           <text x={width - MARGIN.right} y={12} textAnchor="end" {...AXIS_TEXT}>
-            Vertical exaggeration ×{exaggeration >= 10 ? exaggeration.toFixed(0) : exaggeration.toFixed(1)}
+            {p.exaggeration} ×{exaggeration >= 10 ? exaggeration.toFixed(0) : exaggeration.toFixed(1)}
           </text>
 
           {yTicks.map((v) => (
@@ -289,12 +292,12 @@ function ProfileChart({ profile, hover, onHover }: ChartProps) {
             {formatMeters(sample.ele)}
           </p>
           <p className="font-code text-[10.5px] text-lab-muted">
-            {formatAbscisa(sample.d)} · grade {formatGrade(sample.grade)}
+            {formatAbscisa(sample.d)} · {p.grade} {formatGrade(sample.grade)}
           </p>
         </div>
       )}
       <p className="sr-only" aria-live="polite">
-        {sample ? `${formatAbscisa(sample.d)}: ${formatMeters(sample.ele)}, grade ${formatGrade(sample.grade)}` : ''}
+        {sample ? `${formatAbscisa(sample.d)}: ${formatMeters(sample.ele)}, ${p.grade} ${formatGrade(sample.grade)}` : ''}
       </p>
     </div>
   )
@@ -302,6 +305,7 @@ function ProfileChart({ profile, hover, onHover }: ChartProps) {
 
 /** La misma lectura como cartera: estación, cota y pendiente a intervalos regulares. */
 function ProfileTable({ profile }: { profile: Profile }) {
+  const p = useI18n().t.profile
   const { samples, length: total } = profile
   const last = samples.length - 1
   const step = niceStep(total / 14)
@@ -326,13 +330,13 @@ function ProfileTable({ profile }: { profile: Profile }) {
         <thead className="sticky top-0 bg-lab-bg2 font-code text-[10px] tracking-wider text-lab-muted uppercase">
           <tr>
             <th scope="col" className="px-3 py-1.5 text-left font-normal">
-              Station
+              {p.station}
             </th>
             <th scope="col" className="px-3 py-1.5 text-right font-normal">
-              Elevation
+              {p.elevation}
             </th>
             <th scope="col" className="px-3 py-1.5 text-right font-normal">
-              Grade
+              {p.gradeHeader}
             </th>
           </tr>
         </thead>

@@ -9,11 +9,30 @@
   "meta": "ATG Force · Contract, then freelance",
   "summary": "A web and mobile system for a construction subcontractor covering jobs, scheduling, worksheets, GPS and photo time tracking, and payroll.",
   "impact": "Delivered in 7 sprints and running in production",
-  "stack": ["Turborepo", "Express", "React", "React Native", "PostgreSQL", "Railway", "R2"],
+  "stack": [
+    "Turborepo",
+    "Express",
+    "React",
+    "React Native",
+    "PostgreSQL",
+    "Railway",
+    "R2"
+  ],
   "icon": "pin",
   "layer": {
     "kind": "routes",
-    "anchor": [-76.49, 3.468],
+    "anchor": [
+      -76.49,
+      3.468
+    ],
     "note": "Illustrative crew routes from a base yard. Not real tracks."
+  },
+  "es": {
+    "title": "Monorepo de operaciones de campo",
+    "tag": "Construcción · Contrato, luego freelance",
+    "meta": "ATG Force · Contrato, luego freelance",
+    "summary": "Sistema web y móvil para un subcontratista de construcción: trabajos, programación, hojas de trabajo, control de tiempo con GPS y foto, y nómina.",
+    "impact": "Entregado en 7 sprints y funcionando en producción",
+    "layerNote": "Rutas ilustrativas de cuadrillas desde una base. No son recorridos reales."
   }
 }

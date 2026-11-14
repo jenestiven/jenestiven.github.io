@@ -15,19 +15,92 @@
     "I also built a QGIS/PyQGIS map pipeline alongside the ArcGIS/ArcPy one, using SAGA B-spline interpolation, Jenks classification and automated layouts.",
     "Along the way I found the cartographic base was on Bogotá 1975 (EPSG:21896) instead of MAGNA-SIRGAS, and documented how that affects spatial accuracy."
   ],
-  "stack": ["FastAPI", "Pydantic", "SQLite", "React", "TypeScript", "PyWebView", "PyQGIS", "ArcPy", "SAGA"],
+  "stack": [
+    "FastAPI",
+    "Pydantic",
+    "SQLite",
+    "React",
+    "TypeScript",
+    "PyWebView",
+    "PyQGIS",
+    "ArcPy",
+    "SAGA"
+  ],
   "icon": "chart",
   "diagram": {
     "viewBox": "0 0 440 330",
     "label": "Manuelita Smart architecture",
     "nodes": [
-      { "x": 10, "y": 20, "w": 120, "h": 44, "title": "Solinftec", "sub": ["telemetry"] },
-      { "x": 10, "y": 84, "w": 120, "h": 44, "title": "Biosalc TXT", "sub": ["reverse-engineered"] },
-      { "x": 10, "y": 148, "w": 120, "h": 44, "title": "NAX CSV", "sub": ["field exports"] },
-      { "x": 196, "y": 76, "w": 146, "h": 60, "title": "FastAPI + Pydantic", "sub": ["normalization ·", "unified Lot model"], "highlight": true },
-      { "x": 196, "y": 170, "w": 146, "h": 40, "title": "SQLite (local-first)" },
-      { "x": 318, "y": 14, "w": 112, "h": 48, "title": "React / TS", "sub": ["PyWebView UI"] },
-      { "x": 140, "y": 246, "w": 250, "h": 62, "title": "GIS pipeline  ·  PyQGIS / ArcPy", "sub": ["B-spline (SAGA) → Jenks → layouts", "MAGNA-SIRGAS datum handling"] }
+      {
+        "x": 10,
+        "y": 20,
+        "w": 120,
+        "h": 44,
+        "title": "Solinftec",
+        "sub": [
+          "telemetry"
+        ]
+      },
+      {
+        "x": 10,
+        "y": 84,
+        "w": 120,
+        "h": 44,
+        "title": "Biosalc TXT",
+        "sub": [
+          "reverse-engineered"
+        ]
+      },
+      {
+        "x": 10,
+        "y": 148,
+        "w": 120,
+        "h": 44,
+        "title": "NAX CSV",
+        "sub": [
+          "field exports"
+        ]
+      },
+      {
+        "x": 196,
+        "y": 76,
+        "w": 146,
+        "h": 60,
+        "title": "FastAPI + Pydantic",
+        "sub": [
+          "normalization ·",
+          "unified Lot model"
+        ],
+        "highlight": true
+      },
+      {
+        "x": 196,
+        "y": 170,
+        "w": 146,
+        "h": 40,
+        "title": "SQLite (local-first)"
+      },
+      {
+        "x": 318,
+        "y": 14,
+        "w": 112,
+        "h": 48,
+        "title": "React / TS",
+        "sub": [
+          "PyWebView UI"
+        ]
+      },
+      {
+        "x": 140,
+        "y": 246,
+        "w": 250,
+        "h": 62,
+        "title": "GIS pipeline  ·  PyQGIS / ArcPy",
+        "sub": [
+          "B-spline (SAGA) → Jenks → layouts",
+          "MAGNA-SIRGAS datum handling"
+        ]
+      }
     ],
     "flows": [
       "M130 42 C 166 42,166 106,196 106",
@@ -40,7 +113,107 @@
   },
   "layer": {
     "kind": "lots",
-    "anchor": [-76.438, 3.405],
+    "anchor": [
+      -76.438,
+      3.405
+    ],
     "note": "Illustrative lots with synthetic TCH (tonnes of cane per hectare), classified with a real Jenks natural-breaks run in the browser. No client data."
+  },
+  "es": {
+    "tag": "Agricultura de precisión · 2026",
+    "meta": "Ingenio Manuelita S.A., uno de los mayores productores de caña de azúcar de Colombia",
+    "summary": "Plataforma de escritorio local-first que centraliza en un solo lugar el flujo de mapeo de productividad de la caña de azúcar.",
+    "points": [
+      "Plataforma de escritorio local-first que centraliza en un solo lugar el flujo de mapeo de productividad de la caña de azúcar.",
+      "Construí la API en FastAPI + Pydantic a lo largo de 9 sprints, con un único modelo de datos de lote compartido por todas las etapas del flujo.",
+      "Integra datos de Solinftec, Biosalc y NAX. Descifré por ingeniería inversa el formato TXT de Biosalc y escribí un algoritmo de normalización para sus datos de productividad.",
+      "También construí un pipeline de mapas en QGIS/PyQGIS en paralelo al de ArcGIS/ArcPy, con interpolación B-spline de SAGA, clasificación de Jenks y layouts automatizados.",
+      "En el camino encontré que la base cartográfica estaba en Bogotá 1975 (EPSG:21896) y no en MAGNA-SIRGAS, y documenté cómo eso afecta la exactitud espacial."
+    ],
+    "diagram": {
+      "viewBox": "0 0 440 330",
+      "label": "Arquitectura de Manuelita Smart",
+      "nodes": [
+        {
+          "x": 10,
+          "y": 20,
+          "w": 120,
+          "h": 44,
+          "title": "Solinftec",
+          "sub": [
+            "telemetría"
+          ]
+        },
+        {
+          "x": 10,
+          "y": 84,
+          "w": 120,
+          "h": 44,
+          "title": "Biosalc TXT",
+          "sub": [
+            "ingeniería inversa"
+          ]
+        },
+        {
+          "x": 10,
+          "y": 148,
+          "w": 120,
+          "h": 44,
+          "title": "NAX CSV",
+          "sub": [
+            "exportes de campo"
+          ]
+        },
+        {
+          "x": 196,
+          "y": 76,
+          "w": 146,
+          "h": 60,
+          "title": "FastAPI + Pydantic",
+          "sub": [
+            "normalización ·",
+            "modelo único de Lote"
+          ],
+          "highlight": true
+        },
+        {
+          "x": 196,
+          "y": 170,
+          "w": 146,
+          "h": 40,
+          "title": "SQLite (local-first)"
+        },
+        {
+          "x": 318,
+          "y": 14,
+          "w": 112,
+          "h": 48,
+          "title": "React / TS",
+          "sub": [
+            "interfaz en PyWebView"
+          ]
+        },
+        {
+          "x": 140,
+          "y": 246,
+          "w": 250,
+          "h": 62,
+          "title": "GIS pipeline  ·  PyQGIS / ArcPy",
+          "sub": [
+            "B-spline (SAGA) → Jenks → layouts",
+            "manejo del datum MAGNA-SIRGAS"
+          ]
+        }
+      ],
+      "flows": [
+        "M130 42 C 166 42,166 106,196 106",
+        "M130 106 H196",
+        "M130 170 C 166 170,166 106,196 106",
+        "M269 136 V170",
+        "M342 106 H354 V62",
+        "M269 210 V246"
+      ]
+    },
+    "layerNote": "Lotes ilustrativos con TCH sintético (toneladas de caña por hectárea), clasificados con un cálculo real de cortes naturales de Jenks hecho en el navegador. Sin datos del cliente."
   }
 }

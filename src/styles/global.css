@@ -202,3 +202,8 @@
     display: none;
   }
 }
+
+/* La portada espera oculta mientras la app cambia del inglés del servidor al español. */
+html[data-lang-pending]:not([data-lang-ready]) .lab-intro {
+  visibility: hidden;
+}

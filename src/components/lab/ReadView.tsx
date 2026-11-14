@@ -1,5 +1,6 @@
 import { useMemo, useRef, type ReactNode } from 'react'
 import type { LabProfile, LabProject } from '../../types'
+import { useI18n } from '../../lib/lab/i18n'
 import { LENSES, LOT_CLASS_COLORS } from '../../lib/lab/lenses'
 import ArchDiagram from './ArchDiagram'
 
@@ -75,6 +76,7 @@ const eyebrow = 'mb-2.5 font-code text-[12.5px] tracking-[0.14em] text-lab-accen
 const secTitle = 'font-display text-[clamp(28px,4vw,40px)] leading-tight font-bold tracking-tight'
 
 function MapButton({ onClick, lens }: { onClick: () => void; lens: LabProject['lens'] }) {
+  const { t } = useI18n()
   return (
     <button
       type="button"
@@ -82,7 +84,7 @@ function MapButton({ onClick, lens }: { onClick: () => void; lens: LabProject['l
       className="inline-flex items-center gap-2 font-code text-[12px] text-lab-muted transition hover:text-lab-fg"
     >
       <i className="h-2 w-2 rounded-[2px]" style={{ background: LENSES[lens].color }} />
-      View on the map →
+      {t.read.viewOnMap}
     </button>
   )
 }
@@ -92,6 +94,8 @@ function MapButton({ onClick, lens }: { onClick: () => void; lens: LabProject['l
  * las mismas colecciones que el mapa. Cada proyecto lleva de vuelta a su capa.
  */
 export default function ReadView({ profile, projects, onExplore, onViewOnMap, onViewTraverse }: Props) {
+  const { t } = useI18n()
+  const r = t.read
   const scrollerRef = useRef<HTMLDivElement>(null)
   const contours = useContours()
   const lots = useLots()
@@ -115,15 +119,10 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
           </button>
           <div className="flex items-center gap-5 text-[14px]">
             <ul className="hidden gap-5 text-lab-muted sm:flex">
-              {[
-                ['work', 'Work'],
-                ['skills', 'Skills'],
-                ['path', 'Experience'],
-                ['contact', 'Contact'],
-              ].map(([id, label]) => (
+              {(['work', 'skills', 'path', 'contact'] as const).map((id) => (
                 <li key={id}>
                   <button type="button" onClick={() => go(id)} className="hover:text-lab-accent">
-                    {label}
+                    {r.nav[id]}
                   </button>
                 </li>
               ))}
@@ -153,16 +152,16 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
             <p className="mb-7 max-w-[590px] text-[18px] text-lab-muted">{profile.lead}</p>
             <div className="flex flex-wrap gap-3">
               <button type="button" onClick={onExplore} className={btnPrimary}>
-                Explore the map
+                {r.explore}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-[17px] w-[17px]">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </button>
               <button type="button" onClick={() => go('work')} className={btn}>
-                See my work
+                {r.seeWork}
               </button>
               <a className={btn} href={`mailto:${profile.contact.email}`}>
-                Email me
+                {r.email}
               </a>
               <a className={btn} href={profile.contact.linkedin} target="_blank" rel="noopener">
                 LinkedIn
@@ -182,7 +181,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
               </div>
               <span className="font-code">productivity_map.qgz</span>
             </div>
-            <svg viewBox="0 0 360 260" className="block h-auto w-full rounded-xl bg-lab-bg2" aria-label="Illustrative productivity map of agricultural lots">
+            <svg viewBox="0 0 360 260" className="block h-auto w-full rounded-xl bg-lab-bg2" aria-label={r.mapAlt}>
               {lots.map((l) => (
                 <polygon key={l.points} points={l.points} fill={l.fill} opacity={0.88} />
               ))}
@@ -194,9 +193,9 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
               {LOT_CLASS_COLORS.map((c) => (
                 <i key={c} className="inline-block h-2 w-[22px] rounded-[2px]" style={{ background: c }} />
               ))}
-              <span className="ml-auto">Jenks · 5 classes</span>
+              <span className="ml-auto">{r.jenks}</span>
             </div>
-            <p className="mt-1.5 text-[11.5px] text-lab-muted opacity-80">Illustration of the kind of map my pipeline produces (not real data)</p>
+            <p className="mt-1.5 text-[11.5px] text-lab-muted opacity-80">{r.mapCaption}</p>
           </div>
         </div>
       </header>
@@ -213,8 +212,8 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
       </div>
 
       <section id="lab-work" className="mx-auto max-w-[1120px] px-5 pt-[84px]">
-        <div className={eyebrow}>// selected work</div>
-        <h2 className={`${secTitle} mb-3`}>Featured projects</h2>
+        <div className={eyebrow}>{r.workEyebrow}</div>
+        <h2 className={`${secTitle} mb-3`}>{r.workTitle}</h2>
         <p className="mb-8.5 max-w-[640px] text-lab-muted">{profile.workNote}</p>
 
         {lead && (
@@ -259,7 +258,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
 
         {research.length > 0 && (
           <>
-            <div className={`${eyebrow} mt-14`}>// research in progress</div>
+            <div className={`${eyebrow} mt-14`}>{r.researchEyebrow}</div>
             <div className="grid gap-4.5 md:grid-cols-2">
               {research.map((p) => (
                 <ProjectCard key={p.id} project={p} onViewOnMap={onViewOnMap} />
@@ -270,7 +269,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
 
         {others.length > 0 && (
           <>
-            <div className={`${eyebrow} mt-14`}>// other projects</div>
+            <div className={`${eyebrow} mt-14`}>{r.otherEyebrow}</div>
             <div className="grid gap-4.5 md:grid-cols-2">
               {others.map((p) => (
                 <ProjectCard key={p.id} project={p} onViewOnMap={onViewOnMap} />
@@ -281,9 +280,9 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
       </section>
 
       <section id="lab-skills" className="mx-auto max-w-[1120px] px-5 pt-[84px]">
-        <div className={eyebrow}>// toolbox</div>
-        <h2 className={`${secTitle} mb-3`}>What I work with</h2>
-        <p className="mb-8.5 max-w-[640px] text-lab-muted">I can work across the whole path from raw field data to a finished product.</p>
+        <div className={eyebrow}>{r.skillsEyebrow}</div>
+        <h2 className={`${secTitle} mb-3`}>{r.skillsTitle}</h2>
+        <p className="mb-8.5 max-w-[640px] text-lab-muted">{r.skillsSub}</p>
         <div className="grid gap-3.5 md:grid-cols-3">
           {profile.skills.map((group, i) => (
             <div key={group.group} className="rounded-2xl border border-lab-line bg-lab-card p-5">
@@ -304,12 +303,12 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
       </section>
 
       <section id="lab-path" className="mx-auto max-w-[1120px] px-5 pt-[84px]">
-        <div className={eyebrow}>// path</div>
+        <div className={eyebrow}>{r.pathEyebrow}</div>
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className={secTitle}>Experience &amp; education</h2>
+          <h2 className={secTitle}>{r.pathTitle}</h2>
           <button type="button" onClick={onViewTraverse} className="inline-flex items-center gap-2 font-code text-[12px] text-lab-muted hover:text-lab-fg">
             <i className="h-2 w-2 rounded-[2px]" style={{ background: LENSES.topography.color }} />
-            Walk it as a survey traverse →
+            {r.traverse}
           </button>
         </div>
         <div className="relative mt-7.5 ml-2 border-l border-dashed border-lab-line pl-6.5">
@@ -329,7 +328,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
 
       <div className="mx-auto max-w-[1120px] px-5">
         <div id="lab-contact" className="relative mt-[90px] overflow-hidden rounded-3xl border border-lab-line bg-gradient-to-br from-lab-card to-lab-bg2 px-7 py-11 text-center">
-          <div className={eyebrow}>// let's talk</div>
+          <div className={eyebrow}>{r.contactEyebrow}</div>
           <h2 className="mb-2.5 font-display text-[clamp(28px,4vw,40px)] font-bold tracking-tight">{profile.contact.title}</h2>
           <p className="mx-auto mb-6 max-w-[520px] text-lab-muted">{profile.contact.body}</p>
           <div className="flex flex-wrap justify-center gap-3">
@@ -347,7 +346,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
         <footer className="py-9 pb-11 text-center font-code text-[13px] text-lab-muted">
           {profile.footer} ·{' '}
           <a href="/v1" className="underline underline-offset-4 hover:text-lab-fg">
-            Previous version (v1)
+            {r.v1}
           </a>
         </footer>
       </div>
@@ -356,6 +355,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
 }
 
 function ProjectCard({ project: p, onViewOnMap }: { project: LabProject; onViewOnMap: (id: string) => void }) {
+  const { t } = useI18n()
   return (
     <article className="relative rounded-[18px] border border-lab-line bg-lab-card p-6 transition hover:-translate-y-[3px] hover:border-lab-accent/55">
       <div className="mb-4 grid h-[42px] w-[42px] place-items-center rounded-[11px] border border-lab-line bg-lab-bg2">
@@ -364,7 +364,7 @@ function ProjectCard({ project: p, onViewOnMap }: { project: LabProject; onViewO
         </svg>
       </div>
       {p.status === 'in-progress' && (
-        <span className="mb-2 inline-block rounded-full border border-lab-accent2/40 px-2.5 py-0.5 text-[12px] font-semibold text-lab-accent2">in progress</span>
+        <span className="mb-2 inline-block rounded-full border border-lab-accent2/40 px-2.5 py-0.5 text-[12px] font-semibold text-lab-accent2">{t.read.inProgress}</span>
       )}
       <h3 className="mb-1 font-display text-[21px] font-bold tracking-tight">{p.title}</h3>
       <div className="mb-3 text-[14px] text-lab-muted">{p.meta}</div>

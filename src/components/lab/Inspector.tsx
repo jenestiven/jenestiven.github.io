@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Map } from 'mapbox-gl'
 import type { LabProject } from '../../types'
+import { useI18n } from '../../lib/lab/i18n'
 import { LENSES } from '../../lib/lab/lenses'
 import { defaultStyle, mainLayerId } from '../../lib/lab/labLayers'
 
@@ -34,13 +35,14 @@ function formatStyle(style: { id: string; type: string; paint: Record<string, un
  * en vivo de la capa: cada cambio pasa por `setPaintProperty` y Mapbox valida.
  */
 export default function Inspector({ map, project, feature, breaks, onClose }: Props) {
+  const { t } = useI18n()
   const [tab, setTab] = useState<Tab>('attributes')
   const layerId = mainLayerId(project.id)
   const defaults = defaultStyle(project.layer.kind, project.lens)
   const initialText = formatStyle({ id: layerId, type: defaults.type, paint: defaults.paint })
 
   const [text, setText] = useState(initialText)
-  const [status, setStatus] = useState<{ ok: boolean; message: string }>({ ok: true, message: 'Valid style' })
+  const [status, setStatus] = useState<{ ok: boolean; message: string }>({ ok: true, message: t.inspector.valid })
   /** Propiedades que el editor ha aplicado, para poder restaurarlas. */
   const appliedRef = useRef<Set<string>>(new Set())
   /**
@@ -54,7 +56,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
   // Cambiar de proyecto reinicia el editor.
   useEffect(() => {
     setText(initialText)
-    setStatus({ ok: true, message: 'Valid style' })
+    setStatus({ ok: true, message: t.inspector.valid })
     appliedRef.current = new Set()
     setExpanded(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,15 +67,15 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
     try {
       parsed = JSON.parse(value)
     } catch (error) {
-      setStatus({ ok: false, message: `Invalid JSON: ${(error as Error).message}` })
+      setStatus({ ok: false, message: `${t.inspector.invalidJson}: ${(error as Error).message}` })
       return
     }
     if (parsed.type !== defaults.type) {
-      setStatus({ ok: false, message: `This layer is a "${defaults.type}" layer; its type can't change here.` })
+      setStatus({ ok: false, message: t.inspector.typeLocked(defaults.type) })
       return
     }
     if (!parsed.paint || typeof parsed.paint !== 'object') {
-      setStatus({ ok: false, message: 'Missing "paint" object.' })
+      setStatus({ ok: false, message: t.inspector.missingPaint })
       return
     }
 
@@ -93,7 +95,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
     setStatus(
       errors.length
         ? { ok: false, message: errors[0].replace(/^layers\.[^.]+\.paint\./, '') }
-        : { ok: true, message: 'Applied with setPaintProperty()' }
+        : { ok: true, message: t.inspector.applied }
     )
   }
 
@@ -110,7 +112,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
     Object.entries(defaults.paint).forEach(([key, val]) => map.setPaintProperty(layerId, key as never, val as never))
     appliedRef.current = new Set()
     setText(initialText)
-    setStatus({ ok: true, message: 'Style restored' })
+    setStatus({ ok: true, message: t.inspector.restored })
   }
 
   const lens = LENSES[project.lens]
@@ -129,7 +131,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close inspector"
+            aria-label={t.inspector.close}
             className="-mt-1 -mr-1 rounded-lg px-2 py-1 text-lab-muted hover:bg-lab-bg2 hover:text-lab-fg"
           >
             ✕
@@ -139,8 +141,10 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
         <p className="mt-1 text-[13.5px] text-lab-muted">{project.meta}</p>
         <p className="mt-2 flex items-center gap-2 font-code text-[11px]" style={{ color: lens.color }}>
           <i className="h-2 w-2 rounded-[2px]" style={{ background: lens.color }} />
-          {lens.label} lens · {project.layer.kind}
-          {inProgress && <span className="ml-1 rounded-full border border-[#f2c14e66] px-1.5 text-[#f2c14e]">in progress</span>}
+          {t.inspector.lensLine(t.lenses[project.lens].label)} · {project.layer.kind}
+          {inProgress && (
+            <span className="ml-1 rounded-full border border-[#f2c14e66] px-1.5 text-[#f2c14e]">{t.inspector.inProgress}</span>
+          )}
         </p>
         <button
           type="button"
@@ -148,24 +152,24 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
           onClick={() => setExpanded((v) => !v)}
           className="mt-3 w-full rounded-lg border border-lab-line py-2 font-code text-[11.5px] text-lab-muted md:hidden"
         >
-          {expanded ? 'Hide details ↓' : 'Project details and layer style ↑'}
+          {expanded ? t.inspector.collapse : t.inspector.expand}
         </button>
       </header>
 
       <div className={`${expanded ? 'flex' : 'hidden'} min-h-0 flex-1 flex-col md:flex`}>
       <div role="tablist" className="flex border-b border-lab-line font-code text-[12px]">
-        {(['attributes', 'style'] as const).map((t) => (
+        {(['attributes', 'style'] as const).map((id) => (
           <button
-            key={t}
+            key={id}
             role="tab"
             type="button"
-            aria-selected={tab === t}
-            onClick={() => setTab(t)}
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
             className={`flex-1 border-b-2 py-2 transition ${
-              tab === t ? 'border-lab-accent text-lab-fg' : 'border-transparent text-lab-muted hover:text-lab-fg'
+              tab === id ? 'border-lab-accent text-lab-fg' : 'border-transparent text-lab-muted hover:text-lab-fg'
             }`}
           >
-            {t === 'attributes' ? 'Attribute table' : '</> Layer style'}
+            {id === 'attributes' ? t.inspector.tabAttributes : t.inspector.tabStyle}
           </button>
         ))}
       </div>
@@ -207,11 +211,11 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
           </div>
 
           <div className="mt-5 rounded-xl border border-lab-line p-3">
-            <p className="font-code text-[10.5px] tracking-wider text-lab-muted uppercase">About this layer</p>
+            <p className="font-code text-[10.5px] tracking-wider text-lab-muted uppercase">{t.inspector.aboutLayer}</p>
             <p className="mt-1 text-[13px] text-lab-muted">{project.layer.note}</p>
             {breaks && (
               <p className="mt-2 font-code text-[11.5px] text-lab-fg">
-                Jenks breaks (TCH): {breaks.map((b) => Math.round(b)).join(' · ')}
+                {t.inspector.jenks}: {breaks.map((b) => Math.round(b)).join(' · ')}
               </p>
             )}
           </div>
@@ -219,14 +223,14 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-5 py-4">
           <p className="text-[12.5px] text-lab-muted">
-            Mapbox style expression for this layer. Edit it and the map updates live.
+            {t.inspector.styleHint}
           </p>
           <textarea
             id={`lab-style-${project.id}`}
             value={text}
             spellCheck={false}
             onChange={(e) => onEdit(e.target.value)}
-            aria-label="Layer style JSON"
+            aria-label={t.inspector.styleLabel}
             className="min-h-[260px] flex-1 resize-y rounded-xl border border-lab-line bg-lab-bg p-3 font-code text-[12px] leading-relaxed text-lab-fg focus:border-lab-accent3 focus:outline-none"
           />
           <div className="flex items-center justify-between gap-3">
@@ -238,7 +242,7 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
               onClick={reset}
               className="shrink-0 rounded-lg border border-lab-line px-2.5 py-1 font-code text-[11px] text-lab-muted hover:border-lab-accent3 hover:text-lab-fg"
             >
-              Reset
+              {t.inspector.reset}
             </button>
           </div>
         </div>

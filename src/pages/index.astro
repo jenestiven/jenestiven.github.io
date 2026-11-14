@@ -32,6 +32,13 @@ const profile: LabProfile = profileEntry.data;
 		-->
 		<script is:inline>
 			if (location.hash.length > 1) document.documentElement.classList.add('lab-skip-intro');
+			// El HTML llega en inglés. Si la persona prefiere español, la portada
+			// espera oculta hasta que la app cambie el idioma, para que no parpadee.
+			try {
+				var saved = localStorage.getItem('portfolio-lang');
+				var spanish = saved ? saved === 'es' : navigator.language.toLowerCase().indexOf('es') === 0;
+				if (spanish) document.documentElement.dataset.langPending = 'true';
+			} catch (e) {}
 		</script>
 	</Fragment>
 	<div class="fixed inset-0">

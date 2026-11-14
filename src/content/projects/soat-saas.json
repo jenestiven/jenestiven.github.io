@@ -14,11 +14,32 @@
     "Sales paid through Addi, Sistecredito and Brilla credit",
     "Real-time dashboards and billing reconciliation"
   ],
-  "stack": ["Next.js", "Node.js", "Firestore", "Firebase Hosting"],
+  "stack": [
+    "Next.js",
+    "Node.js",
+    "Firestore",
+    "Firebase Hosting"
+  ],
   "icon": "code",
   "layer": {
     "kind": "graduated",
-    "anchor": [-76.512, 3.43],
+    "anchor": [
+      -76.512,
+      3.43
+    ],
     "note": "Illustrative branches sized by synthetic monthly sales."
+  },
+  "es": {
+    "title": "SaaS de venta de SOAT",
+    "tag": "SaaS de seguros · Freelance · 2025",
+    "meta": "Centro de diagnóstico automotor · Freelance · 2025",
+    "summary": "Plataforma multisede para la venta del seguro obligatorio de vehículos, que diseñé y entregué por mi cuenta, desde los requisitos hasta producción.",
+    "impact": "Construido en solitario, de la arquitectura al despliegue",
+    "points": [
+      "Acceso por roles para asesores de venta y administradores",
+      "Ventas pagadas con crédito de Addi, Sistecredito y Brilla",
+      "Tableros en tiempo real y conciliación de facturación"
+    ],
+    "layerNote": "Sedes ilustrativas, dimensionadas según ventas mensuales sintéticas."
   }
 }

@@ -140,6 +140,17 @@ export type LabProject = {
     /** Nota visible sobre qué representa la geometría. */
     note: string
   }
+  /** Textos en español. Lo que falte cae al inglés. */
+  es?: {
+    title?: string
+    tag?: string
+    meta?: string
+    summary?: string
+    impact?: string
+    points?: string[]
+    diagram?: ArchDiagram
+    layerNote?: string
+  }
 }
 
 export type TimelineEntry = {
@@ -173,4 +184,16 @@ export type LabProfile = {
     github: string
   }
   footer: string
+  /** Textos en español. Lo que falte cae al inglés. */
+  es?: {
+    role?: string
+    headline?: LabProfile['headline']
+    lead?: string
+    stats?: LabProfile['stats']
+    workNote?: string
+    skills?: LabProfile['skills']
+    /** Alineada por posición con `timeline`. */
+    timeline?: { when: string; title: string; org: string }[]
+    contact?: { title: string; body: string }
+  }
 }

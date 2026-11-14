@@ -115,7 +115,14 @@ const CURSOR_SOURCE = 'lab-profile-cursor'
 const EMPTY = { type: 'FeatureCollection', features: [] }
 const BG = '#0b0f0e'
 
-export const hasProfileLayers = (map: Map) => Boolean(map.getSource(LINE_SOURCE))
+/** False también si el mapa ya fue destruido (pasa al recargar en caliente en desarrollo). */
+export function hasProfileLayers(map: Map) {
+  try {
+    return Boolean(map.getSource(LINE_SOURCE))
+  } catch {
+    return false
+  }
+}
 
 function ensureProfileLayers(map: Map) {
   if (hasProfileLayers(map)) return
