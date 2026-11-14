@@ -182,3 +182,16 @@
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 10px;
 }
+
+/* Portada de la v2: un enlace con hash la salta antes del primer pintado. */
+.lab-skip-intro .lab-intro {
+  display: none;
+}
+
+/* Durante la portada y el vuelo el mapa no muestra controles propios (el logo y la atribución sí). */
+.lab[data-intro="hero"] .mapboxgl-ctrl-group,
+.lab[data-intro="hero"] .mapboxgl-ctrl-scale,
+.lab[data-intro="flying"] .mapboxgl-ctrl-group,
+.lab[data-intro="flying"] .mapboxgl-ctrl-scale {
+  display: none;
+}
