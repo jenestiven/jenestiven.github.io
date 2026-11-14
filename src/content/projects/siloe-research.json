@@ -1,0 +1,19 @@
+{
+  "id": "siloe-research",
+  "title": "Landslide susceptibility in Siloé",
+  "order": 5,
+  "featured": false,
+  "lens": "gis",
+  "status": "in-progress",
+  "tag": "Undergraduate research · in progress",
+  "meta": "Universidad del Valle · Siloé, Cali",
+  "summary": "Research I'm currently developing: a multicriteria landslide-susceptibility model for the Siloé hillside, built on open remote-sensing data.",
+  "impact": "Work in progress. No published results yet.",
+  "stack": ["Remote sensing", "Multicriteria analysis", "QGIS"],
+  "icon": "terrain",
+  "layer": {
+    "kind": "study-area",
+    "anchor": [-76.566, 3.424],
+    "note": "Approximate study area only. No model output is shown while the research is in progress."
+  }
+}

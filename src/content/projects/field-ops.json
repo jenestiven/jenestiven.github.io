@@ -1,0 +1,19 @@
+{
+  "id": "field-ops",
+  "title": "Field Operations Monorepo",
+  "order": 4,
+  "featured": true,
+  "lens": "software",
+  "status": "production",
+  "tag": "Construction · Contract, then freelance",
+  "meta": "ATG Force · Contract, then freelance",
+  "summary": "A web and mobile system for a construction subcontractor covering jobs, scheduling, worksheets, GPS and photo time tracking, and payroll.",
+  "impact": "Delivered in 7 sprints and running in production",
+  "stack": ["Turborepo", "Express", "React", "React Native", "PostgreSQL", "Railway", "R2"],
+  "icon": "pin",
+  "layer": {
+    "kind": "routes",
+    "anchor": [-76.49, 3.468],
+    "note": "Illustrative crew routes from a base yard. Not real tracks."
+  }
+}

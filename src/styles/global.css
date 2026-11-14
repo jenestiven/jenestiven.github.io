@@ -86,3 +86,99 @@
   color: #ffffff;
   background: transparent;
 }
+
+/* -------------------------------------------------------------------------- */
+/* /lab — paleta y tipografía de jenestiven.github.io (addendum v8)           */
+/* -------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-lab-bg: var(--lab-bg);
+  --color-lab-bg2: var(--lab-bg2);
+  --color-lab-card: var(--lab-card);
+  --color-lab-line: var(--lab-line);
+  --color-lab-fg: var(--lab-fg);
+  --color-lab-muted: var(--lab-muted);
+  --color-lab-accent: var(--lab-accent);
+  --color-lab-accent2: var(--lab-accent2);
+  --color-lab-accent3: var(--lab-accent3);
+  --font-display: "Space Grotesk", Inter, system-ui, sans-serif;
+  --font-inter: Inter, system-ui, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+.lab {
+  --lab-bg: #0b0f0e;
+  --lab-bg2: #101615;
+  --lab-card: #131a19;
+  --lab-line: #22302d;
+  --lab-fg: #e8efec;
+  --lab-muted: #93a39e;
+  --lab-accent: #4ee3b0;
+  --lab-accent2: #f2c14e;
+  --lab-accent3: #5aa9ff;
+  --lab-glow: rgb(78 227 176 / 0.14);
+  color: var(--lab-fg);
+  background: var(--lab-bg);
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* La vista Leer respeta el modo claro, igual que jenestiven.github.io. */
+@media (prefers-color-scheme: light) {
+  .lab-read {
+    --lab-bg: #f6f4ee;
+    --lab-bg2: #efece4;
+    --lab-card: #ffffff;
+    --lab-line: #dcd7cb;
+    --lab-fg: #15201d;
+    --lab-muted: #5b6a65;
+    --lab-accent: #0f8a63;
+    --lab-accent2: #b7820c;
+    --lab-accent3: #2a6fd1;
+    --lab-glow: rgb(15 138 99 / 0.1);
+  }
+}
+
+/* Flujos animados de los diagramas de arquitectura (SVG). */
+.lab-flow {
+  stroke: var(--lab-accent);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 5 5;
+  animation: lab-dash 1.2s linear infinite;
+}
+
+@keyframes lab-dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-flow {
+    animation: none;
+  }
+}
+
+/* Controles de Mapbox en /lab: los pinta mapbox-gl.css en blanco. */
+.lab .mapboxgl-ctrl-group {
+  background: var(--lab-card);
+  border: 1px solid var(--lab-line);
+  box-shadow: none;
+}
+
+.lab .mapboxgl-ctrl-group button + button {
+  border-top-color: var(--lab-line);
+}
+
+.lab .mapboxgl-ctrl-group .mapboxgl-ctrl-icon {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.lab .mapboxgl-ctrl-scale {
+  background: rgb(11 15 14 / 0.75);
+  border-color: var(--lab-muted);
+  color: var(--lab-fg);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+}

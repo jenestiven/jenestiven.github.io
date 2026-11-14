@@ -1,0 +1,24 @@
+{
+  "id": "renovation-platform",
+  "title": "Renovation Management Platform",
+  "order": 2,
+  "featured": true,
+  "lens": "software",
+  "status": "production",
+  "tag": "Operations platform · 2023 – 2026",
+  "meta": "Justo Pago Remodelaciones · 2023 – 2026",
+  "summary": "An end-to-end operations platform for a renovation company. I joined as Junior Dev & QA and was promoted to Full Stack.",
+  "impact": "Used by ~50 people to run 400+ active projects",
+  "points": [
+    "Inventory, purchasing and finance modules, covering budgets, client payments and cash flow",
+    "A GIS sectorization map in Mapbox GL JS and a real-time project chat",
+    "ZapSign e-signature, Twilio notifications and automated PDF contracts"
+  ],
+  "stack": ["React", "Firebase", "Mapbox GL JS", "Twilio", "ZapSign"],
+  "icon": "building",
+  "layer": {
+    "kind": "points",
+    "anchor": [-76.532, 3.442],
+    "note": "Illustrative job sites (active / closed). Positions are random, not client addresses."
+  }
+}

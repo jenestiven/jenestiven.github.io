@@ -1,0 +1,24 @@
+{
+  "id": "soat-saas",
+  "title": "SOAT Sales SaaS",
+  "order": 3,
+  "featured": true,
+  "lens": "software",
+  "status": "delivered",
+  "tag": "Insurance SaaS · Freelance · 2025",
+  "meta": "Automotive inspection center · Freelance · 2025",
+  "summary": "A multi-branch sales platform for mandatory vehicle insurance that I designed and shipped on my own, from requirements to production.",
+  "impact": "Built solo, from architecture to deployment",
+  "points": [
+    "Role-based access for sales advisors and administrators",
+    "Sales paid through Addi, Sistecredito and Brilla credit",
+    "Real-time dashboards and billing reconciliation"
+  ],
+  "stack": ["Next.js", "Node.js", "Firestore", "Firebase Hosting"],
+  "icon": "code",
+  "layer": {
+    "kind": "graduated",
+    "anchor": [-76.512, 3.43],
+    "note": "Illustrative branches sized by synthetic monthly sales."
+  }
+}

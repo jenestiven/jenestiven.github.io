@@ -91,4 +91,87 @@ const scenes = defineCollection({
   }),
 })
 
-export const collections = { scenes }
+/* /lab — tres lentes (addendum v8) ----------------------------------------- */
+
+const lensSchema = z.enum(['topography', 'gis', 'software'])
+const lngLat = z.tuple([z.number(), z.number()])
+
+const archDiagramSchema = z.object({
+  viewBox: z.string(),
+  label: z.string(),
+  nodes: z.array(
+    z.object({
+      x: z.number(),
+      y: z.number(),
+      w: z.number(),
+      h: z.number(),
+      title: z.string(),
+      sub: z.array(z.string()).optional(),
+      highlight: z.boolean().optional(),
+    })
+  ),
+  flows: z.array(z.string()),
+})
+
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/projects' }),
+  schema: z.object({
+    id: z.string(),
+    title: z.string(),
+    order: z.number(),
+    featured: z.boolean(),
+    draft: z.boolean().optional(),
+    lens: lensSchema,
+    status: z.enum(['production', 'delivered', 'in-progress']),
+    tag: z.string(),
+    meta: z.string(),
+    summary: z.string(),
+    impact: z.string().optional(),
+    points: z.array(z.string()).optional(),
+    stack: z.array(z.string()),
+    icon: z.enum(['building', 'chart', 'pin', 'terrain', 'code']).optional(),
+    diagram: archDiagramSchema.optional(),
+    layer: z.object({
+      kind: z.enum(['lots', 'points', 'routes', 'graduated', 'study-area']),
+      anchor: lngLat,
+      note: z.string(),
+    }),
+  }),
+})
+
+const profile = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/profile' }),
+  schema: z.object({
+    id: z.string(),
+    name: z.string(),
+    shortName: z.string(),
+    fullName: z.string(),
+    role: z.string(),
+    photo: z.string(),
+    origin: z.object({ label: z.string(), coord: lngLat }),
+    headline: z.object({ before: z.string(), highlight: z.string(), after: z.string() }),
+    lead: z.string(),
+    stats: z.array(z.object({ value: z.string(), label: z.string() })),
+    workNote: z.string(),
+    skills: z.array(z.object({ group: z.string(), items: z.array(z.string()) })),
+    timeline: z.array(
+      z.object({
+        code: z.string().optional(),
+        when: z.string(),
+        title: z.string(),
+        org: z.string(),
+        station: lngLat.optional(),
+      })
+    ),
+    contact: z.object({
+      title: z.string(),
+      body: z.string(),
+      email: z.string(),
+      linkedin: z.string(),
+      github: z.string(),
+    }),
+    footer: z.string(),
+  }),
+})
+
+export const collections = { scenes, projects, profile }

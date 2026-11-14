@@ -1,0 +1,43 @@
+{
+  "id": "main",
+  "name": "Jhon González Aricapa",
+  "shortName": "Jhon González",
+  "fullName": "Jhon Steven González Aricapa",
+  "role": "Topographer · GIS Developer · Software Developer",
+  "photo": "/profile.jpeg",
+  "origin": { "label": "3.4516° N, 76.5320° W · CALI, CO", "coord": [-76.532, 3.4516] },
+  "headline": { "before": "I turn ", "highlight": "spatial data", "after": "into software people use." },
+  "lead": "I'm a GIS and Full Stack Developer. I build geospatial pipelines in Python (PyQGIS, ArcPy) and the products around them in FastAPI, React and TypeScript. My background is in topographic engineering, and I've spent 2+ years shipping production software for agro-industry, construction and insurance.",
+  "stats": [
+    { "value": "400+", "label": "active projects managed on a platform I helped build" },
+    { "value": "~50", "label": "daily operational users on my software" },
+    { "value": "9", "label": "sprints to deliver the Manuelita Smart API" },
+    { "value": "3", "label": "agricultural data sources integrated (Solinftec, Biosalc, NAX)" }
+  ],
+  "workNote": "Most of my work is private client software, so the code and live demos aren't public. I'm happy to walk through any of these in an interview.",
+  "skills": [
+    { "group": "Geospatial", "items": ["PyQGIS", "ArcPy", "QGIS", "ArcGIS", "SAGA", "Mapbox GL JS", "CRS / datums", "Sentinel-2"] },
+    { "group": "Backend", "items": ["Python", "FastAPI", "Pydantic", "Node.js", "Express", "REST APIs", "PostgreSQL", "SQLite", "Firestore"] },
+    { "group": "Frontend", "items": ["React", "TypeScript", "Next.js", "Vite", "Tailwind", "React Native"] },
+    { "group": "Surveying", "items": ["GNSS RTK/PPK", "Total station", "UAV photogrammetry", "Civil 3D"] },
+    { "group": "Ship & deploy", "items": ["Git", "Vercel", "Railway", "Cloudflare R2", "Firebase", "Turborepo"] },
+    { "group": "Ways of working", "items": ["End-to-end ownership", "Sprints", "Technical docs", "Claude Code"] }
+  ],
+  "timeline": [
+    { "code": "E6", "when": "JUN 2026 – DEC 2026", "title": "Precision Agriculture Intern, Software & GIS", "org": "Ingenio Manuelita S.A.", "station": [-76.505, 3.474] },
+    { "code": "E5", "when": "JUL 2025 – DEC 2025", "title": "Full Stack Developer (Freelance)", "org": "Automotive inspection center: SOAT sales SaaS", "station": [-76.523, 3.456] },
+    { "code": "E4", "when": "DEC 2024 – FEB 2026", "title": "Full Stack Developer", "org": "Justo Pago Remodelaciones", "station": [-76.544, 3.439] },
+    { "code": "E3", "when": "DEC 2023 – DEC 2024", "title": "Junior Developer & QA", "org": "Justo Pago Remodelaciones (promoted)", "station": [-76.53, 3.418] },
+    { "when": "CONTRACT + FREELANCE", "title": "Software Developer", "org": "ATG Force" },
+    { "code": "E1", "when": "2019 – PRESENT", "title": "B.Eng. Topographic Engineering (thesis stage)", "org": "Universidad del Valle. The program is now called Geomatics Engineering.", "station": [-76.53445, 3.37501] },
+    { "code": "E2", "when": "2022 – PRESENT", "title": "Software Development Technology (in progress)", "org": "Universidad del Valle · Spanish (native) · English (B2, certified)", "station": [-76.5395, 3.3985] }
+  ],
+  "contact": {
+    "title": "Open to GIS and full stack roles",
+    "body": "I'm open to remote roles, and to hybrid or on-site roles in Colombia and Europe.",
+    "email": "jhon.gonzalez.aricapa@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/jhon-aricapa/",
+    "github": "https://github.com/jenestiven"
+  },
+  "footer": "© 2026 Jhon Steven González Aricapa"
+}
