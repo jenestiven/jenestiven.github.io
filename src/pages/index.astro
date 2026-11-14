@@ -4,8 +4,8 @@ import LabView from '../components/lab/LabView.tsx';
 import Layout from '../layouts/Layout.astro';
 import type { LabProfile, LabProject } from '../types';
 
-// v2 del portafolio (addendums v8 y v9): un solo mapa, tres lentes, y
-// jenestiven.github.io integrado como vista Leer. La v1 vive en /v1.
+// Portafolio (addendums v8–v10): un solo mapa, tres lentes, y
+// jenestiven.github.io integrado como vista Leer.
 const projects: LabProject[] = (await getCollection('projects'))
 	.map((entry) => entry.data)
 	.filter((project) => !project.draft)
@@ -32,12 +32,10 @@ const profile: LabProfile = profileEntry.data;
 		-->
 		<script is:inline>
 			if (location.hash.length > 1) document.documentElement.classList.add('lab-skip-intro');
-			// El HTML llega en inglés. Si la persona prefiere español, la portada
-			// espera oculta hasta que la app cambie el idioma, para que no parpadee.
+			// El HTML llega en inglés. Si la persona eligió español en otra visita,
+			// la portada espera oculta hasta que la app cambie el idioma.
 			try {
-				var saved = localStorage.getItem('portfolio-lang');
-				var spanish = saved ? saved === 'es' : navigator.language.toLowerCase().indexOf('es') === 0;
-				if (spanish) document.documentElement.dataset.langPending = 'true';
+				if (localStorage.getItem('portfolio-lang') === 'es') document.documentElement.dataset.langPending = 'true';
 			} catch (e) {}
 		</script>
 	</Fragment>

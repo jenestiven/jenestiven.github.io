@@ -3,6 +3,7 @@ import type { LabProfile, LabProject } from '../../types'
 import { useI18n } from '../../lib/lab/i18n'
 import { LENSES, LOT_CLASS_COLORS } from '../../lib/lab/lenses'
 import ArchDiagram from './ArchDiagram'
+import ProjectMedia, { ProjectLinkButton } from './ProjectMedia'
 
 type Props = {
   profile: LabProfile
@@ -238,13 +239,15 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
                   </span>
                 ))}
               </div>
-              <div className="mt-5">
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
                 <MapButton lens={lead.lens} onClick={() => onViewOnMap(lead.id)} />
+                {lead.link && <ProjectLinkButton link={lead.link} compact />}
               </div>
             </div>
-            {lead.diagram && (
-              <div className="relative">
-                <ArchDiagram diagram={lead.diagram} />
+            {(lead.media || lead.diagram) && (
+              <div className="relative flex flex-col gap-6">
+                {lead.media && <ProjectMedia media={lead.media} title={lead.title} />}
+                {lead.diagram && <ArchDiagram diagram={lead.diagram} />}
               </div>
             )}
           </article>
@@ -343,12 +346,7 @@ export default function ReadView({ profile, projects, onExplore, onViewOnMap, on
             </a>
           </div>
         </div>
-        <footer className="py-9 pb-11 text-center font-code text-[13px] text-lab-muted">
-          {profile.footer} ·{' '}
-          <a href="/v1" className="underline underline-offset-4 hover:text-lab-fg">
-            {r.v1}
-          </a>
-        </footer>
+        <footer className="py-9 pb-11 text-center font-code text-[13px] text-lab-muted">{profile.footer}</footer>
       </div>
     </div>
   )
@@ -368,6 +366,11 @@ function ProjectCard({ project: p, onViewOnMap }: { project: LabProject; onViewO
       )}
       <h3 className="mb-1 font-display text-[21px] font-bold tracking-tight">{p.title}</h3>
       <div className="mb-3 text-[14px] text-lab-muted">{p.meta}</div>
+      {p.media && (
+        <div className="mb-4">
+          <ProjectMedia media={p.media} title={p.title} />
+        </div>
+      )}
       <p className="mb-3.5 text-lab-muted">{p.summary}</p>
       {p.impact && <div className="mb-4 border-l-2 border-lab-accent pl-2.5 text-[14px]">{p.impact}</div>}
       {p.points && p.points.length > 0 && (
@@ -387,8 +390,9 @@ function ProjectCard({ project: p, onViewOnMap }: { project: LabProject; onViewO
           </span>
         ))}
       </div>
-      <div className="mt-5">
+      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
         <MapButton lens={p.lens} onClick={() => onViewOnMap(p.id)} />
+        {p.link && <ProjectLinkButton link={p.link} compact />}
       </div>
     </article>
   )

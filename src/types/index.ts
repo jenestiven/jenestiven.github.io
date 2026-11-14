@@ -1,91 +1,7 @@
-/**
- * Campos comunes a los proyectos de experiencia laboral (Londres y Tokio).
- * Es el equivalente a una tarjeta de experiencia de LinkedIn: cargo, empresa,
- * ubicación y el material de apoyo (video y/o carrusel de imágenes).
+/*
+ * Tipos del portafolio. Son la fuente de verdad: el esquema de
+ * `src/content/config.ts` los replica en Zod.
  */
-export type WorkDetailBase = {
-  /** Cargo desempeñado, ej. "Desarrollador Full-Stack". */
-  role: string
-  company: string
-  companyLocation: string
-  description: string
-  /** Carrusel de imágenes. La primera se usa como preview en el popup. */
-  images?: string[]
-  /** Video de demo. Tiene prioridad sobre el carrusel si ambos existen. */
-  videoUrl?: string
-  socialLinks?: {
-    linkedin?: string
-    github?: string
-    website?: string
-  }
-  /** Link a la demo desplegada, si existe. */
-  demoUrl?: string
-}
-
-export type SoftwareDetail = WorkDetailBase & {
-  kind: 'software'
-  stack: string[]
-}
-
-export type GeospatialDetail = WorkDetailBase & {
-  kind: 'geospatial'
-  /** Ruta a diagrama de metodología (SVG/PNG) */
-  diagramAsset: string
-  methodologyText: string
-  /** Solo para casos no confidenciales (ej. tesis Siloé) */
-  liveLayer?: {
-    sourceUrl: string
-    layerType: 'raster' | 'vector'
-  }
-}
-
-export type ProfileDetail = {
-  kind: 'profile'
-  subtype: 'education' | 'about' | 'interests' | 'skills'
-  /** Imagen de la vista previa del popup y del panel. */
-  previewImage: string
-  title: string
-  /** Contenido del panel completo. */
-  body: string
-  /** Solo para subtype 'skills': badges de tecnologías. */
-  skills?: string[]
-}
-
-export type ProjectDetail = SoftwareDetail | GeospatialDetail | ProfileDetail
-
-/** Los dos kinds que comparten `WorkDetailBase`. */
-export type WorkDetail = SoftwareDetail | GeospatialDetail
-
-export type Marker = {
-  id: string
-  coord: [number, number]
-  title: string
-  type: 'software' | 'geospatial' | 'profile'
-  detail: ProjectDetail
-}
-
-export type Scene = {
-  id: string
-  title: string
-  /** Nombre corto de la ciudad, para el menú del tour. Cae a `title` si falta. */
-  section?: string
-  city?: string
-  description: string
-  camera: {
-    center: [number, number]
-    zoom: number
-    pitch: number
-    bearing: number
-  }
-  duration?: number
-  /** Radio en km alrededor de camera.center para la detección de escena activa. */
-  radiusKm: number
-  markers: Marker[]
-}
-
-/* -------------------------------------------------------------------------- */
-/* /lab — tres lentes (addendum v8)                                           */
-/* -------------------------------------------------------------------------- */
 
 /** Los tres perfiles de Jhon, cada uno es una lente sobre el mismo mapa. */
 export type Lens = 'topography' | 'gis' | 'software'
@@ -112,6 +28,39 @@ export type ArchDiagram = {
   flows: string[]
 }
 
+/** Una imagen del carrusel. `src` es una ruta de /public o una URL. */
+export type MediaImage = {
+  src: string
+  alt: string
+  caption?: string
+  es?: { alt?: string; caption?: string }
+}
+
+/**
+ * Material audiovisual de un proyecto: un carrusel de imágenes o un video.
+ * Es opcional: un proyecto sin material simplemente no lo declara.
+ */
+export type ProjectMedia =
+  | { type: 'images'; images: MediaImage[] }
+  | {
+      type: 'video'
+      /** Archivo (.mp4/.webm en /public o URL) o enlace de YouTube / Vimeo. */
+      src: string
+      /** Título accesible del video. */
+      title: string
+      /** Imagen de portada para archivos de video (YouTube y Vimeo traen la suya). */
+      poster?: string
+      es?: { title?: string }
+    }
+
+/** Enlace de redirección del proyecto: demo, sitio en producción, repositorio… */
+export type ProjectLink = {
+  url: string
+  /** Texto del botón. Por defecto: "Visit project" / "Ver proyecto". */
+  label?: string
+  es?: { label?: string }
+}
+
 export type LabProject = {
   id: string
   title: string
@@ -133,6 +82,8 @@ export type LabProject = {
   stack: string[]
   icon?: 'building' | 'chart' | 'pin' | 'terrain' | 'code'
   diagram?: ArchDiagram
+  media?: ProjectMedia
+  link?: ProjectLink
   layer: {
     kind: LabLayerKind
     /** Centro aproximado de la geometría ilustrativa [lng, lat]. */

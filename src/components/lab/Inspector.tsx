@@ -3,6 +3,7 @@ import type { Map } from 'mapbox-gl'
 import type { LabProject } from '../../types'
 import { useI18n } from '../../lib/lab/i18n'
 import { LENSES } from '../../lib/lab/lenses'
+import ProjectMedia, { ProjectLinkButton } from './ProjectMedia'
 import { defaultStyle, mainLayerId } from '../../lib/lab/labLayers'
 
 export type PickedFeature = {
@@ -187,6 +188,12 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
             </div>
           )}
 
+          {project.media && (
+            <div className="mb-4">
+              <ProjectMedia media={project.media} title={project.title} />
+            </div>
+          )}
+
           <p className="text-lab-fg">{project.summary}</p>
 
           {project.points && project.points.length > 0 && (
@@ -209,6 +216,12 @@ export default function Inspector({ map, project, feature, breaks, onClose }: Pr
               </span>
             ))}
           </div>
+
+          {project.link && (
+            <div className="mt-4">
+              <ProjectLinkButton link={project.link} />
+            </div>
+          )}
 
           <div className="mt-5 rounded-xl border border-lab-line p-3">
             <p className="font-code text-[10.5px] tracking-wider text-lab-muted uppercase">{t.inspector.aboutLayer}</p>

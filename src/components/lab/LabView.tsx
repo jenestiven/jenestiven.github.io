@@ -131,8 +131,8 @@ export default function LabView({ profile, projects }: Props) {
   const pendingRef = useRef<string | null>(null)
   const isDesktop = useIsDesktop()
 
-  // Idioma. El HTML del servidor sale en inglés; al montar se cambia al
-  // preferido (guardado, o el del navegador).
+  // Idioma. El inglés es el principal; al montar solo se cambia a español si
+  // la persona lo eligió en una visita anterior.
   const [lang, setLangState] = useState<Lang>('en')
   const setLang = useCallback((next: Lang) => {
     setLangState(next)

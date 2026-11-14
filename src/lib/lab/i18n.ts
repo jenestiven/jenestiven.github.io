@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { LabProfile, LabProject, Lens } from '../../types'
+import type { LabProfile, LabProject, Lens, ProjectMedia } from '../../types'
 
 /*
  * Idiomas de la v2. Los textos de interfaz viven aquí; el contenido (perfil y
@@ -8,7 +8,7 @@ import type { LabProfile, LabProject, Lens } from '../../types'
  */
 
 export type Lang = 'en' | 'es'
-export const LANGS: Lang[] = ['es', 'en']
+export const LANGS: Lang[] = ['en', 'es']
 export const LANG_STORAGE_KEY = 'portfolio-lang'
 
 type LensText = { label: string; description: string; baseLayers: string[] }
@@ -55,7 +55,6 @@ const en = {
     tool: 'tool',
     status: { production: 'in production', delivered: 'delivered', 'in-progress': 'in progress' },
     note: 'Project geometries are synthetic and illustrative. Client data stays private.',
-    v1: 'v1 · the guided-tour version →',
   },
   inspector: {
     close: 'Close inspector',
@@ -108,6 +107,16 @@ const en = {
     gradeHeader: 'Grade',
   },
   hud: { cursorHint: 'WGS84 · move the cursor over the map', loadingMap: 'loading map…' },
+  media: {
+    gallery: (title: string) => `${title}: images`,
+    previous: 'Previous image',
+    next: 'Next image',
+    goTo: (i: number) => `Show image ${i}`,
+    counter: (i: number, n: number) => `${i} / ${n}`,
+    unavailable: 'Image not available',
+    visit: 'Visit project',
+    newTab: 'opens in a new tab',
+  },
   read: {
     nav: { work: 'Work', skills: 'Skills', path: 'Experience', contact: 'Contact' },
     explore: 'Explore the map',
@@ -129,7 +138,6 @@ const en = {
     contactEyebrow: "// let's talk",
     viewOnMap: 'View on the map →',
     inProgress: 'in progress',
-    v1: 'Previous version (v1)',
   },
 }
 
@@ -177,7 +185,6 @@ const es: Strings = {
     tool: 'herramienta',
     status: { production: 'en producción', delivered: 'entregado', 'in-progress': 'en curso' },
     note: 'Las geometrías de los proyectos son sintéticas e ilustrativas. Los datos de los clientes son privados.',
-    v1: 'v1 · la versión de tour guiado →',
   },
   inspector: {
     close: 'Cerrar el inspector',
@@ -229,6 +236,16 @@ const es: Strings = {
     gradeHeader: 'Pendiente',
   },
   hud: { cursorHint: 'WGS84 · mueve el cursor sobre el mapa', loadingMap: 'cargando el mapa…' },
+  media: {
+    gallery: (title) => `${title}: imágenes`,
+    previous: 'Imagen anterior',
+    next: 'Imagen siguiente',
+    goTo: (i) => `Ver la imagen ${i}`,
+    counter: (i, n) => `${i} / ${n}`,
+    unavailable: 'Imagen no disponible',
+    visit: 'Ver proyecto',
+    newTab: 'se abre en una pestaña nueva',
+  },
   read: {
     nav: { work: 'Proyectos', skills: 'Herramientas', path: 'Experiencia', contact: 'Contacto' },
     explore: 'Explorar el mapa',
@@ -250,7 +267,6 @@ const es: Strings = {
     contactEyebrow: '// hablemos',
     viewOnMap: 'Ver en el mapa →',
     inProgress: 'en curso',
-    v1: 'Versión anterior (v1)',
   },
 }
 
@@ -261,21 +277,42 @@ export type LabI18n = { lang: Lang; t: Strings; setLang: (lang: Lang) => void }
 export const LabI18nContext = createContext<LabI18n>({ lang: 'en', t: en, setLang: () => {} })
 export const useI18n = () => useContext(LabI18nContext)
 
-/** Idioma preferido: el guardado, o español si el navegador está en español. */
+/**
+ * Idioma de la visita. El inglés es el principal: el español solo aparece
+ * si la persona lo eligió antes con el conmutador ES/EN.
+ */
 export function detectLang(): Lang {
   try {
-    const saved = localStorage.getItem(LANG_STORAGE_KEY)
-    if (saved === 'en' || saved === 'es') return saved
+    if (localStorage.getItem(LANG_STORAGE_KEY) === 'es') return 'es'
   } catch {
-    // Sin almacenamiento (modo privado): se decide por el idioma del navegador.
+    // Sin almacenamiento (modo privado): inglés.
   }
-  return navigator.language.toLowerCase().startsWith('es') ? 'es' : 'en'
+  return 'en'
+}
+
+function localizeMedia(media: ProjectMedia | undefined): ProjectMedia | undefined {
+  if (!media) return media
+  if (media.type === 'video') return { ...media, title: media.es?.title ?? media.title }
+  return {
+    ...media,
+    images: media.images.map((img) => ({
+      ...img,
+      alt: img.es?.alt ?? img.alt,
+      caption: img.es?.caption ?? img.caption,
+    })),
+  }
 }
 
 export function localizeProject(project: LabProject, lang: Lang): LabProject {
-  if (lang === 'en' || !project.es) return project
-  const { layerNote, ...text } = project.es
-  return { ...project, ...text, layer: { ...project.layer, note: layerNote ?? project.layer.note } }
+  if (lang === 'en') return project
+  const { layerNote, ...text } = project.es ?? {}
+  return {
+    ...project,
+    ...text,
+    media: localizeMedia(project.media),
+    link: project.link && { ...project.link, label: project.link.es?.label ?? project.link.label },
+    layer: { ...project.layer, note: layerNote ?? project.layer.note },
+  }
 }
 
 export function localizeProfile(profile: LabProfile, lang: Lang): LabProfile {

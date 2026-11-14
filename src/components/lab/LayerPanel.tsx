@@ -189,12 +189,7 @@ export default function LayerPanel({
         })}
       </div>
 
-      <div className="border-t border-lab-line px-4 py-2.5 text-[11.5px] leading-snug text-lab-muted">
-        <p>{t.layers.note}</p>
-        <a href="/v1" className="mt-1.5 inline-block font-code text-[11px] hover:text-lab-fg">
-          {t.layers.v1}
-        </a>
-      </div>
+      <p className="border-t border-lab-line px-4 py-2.5 text-[11.5px] leading-snug text-lab-muted">{t.layers.note}</p>
     </section>
   )
 }
