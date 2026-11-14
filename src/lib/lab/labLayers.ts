@@ -16,6 +16,11 @@ const TEXT_FONT = ['DIN Pro Medium', 'Arial Unicode MS Regular']
 /** Extensión de la gratícula: el valle de Cali y su ladera occidental. */
 const GRATICULE_BBOX: [number, number, number, number] = [-76.62, 3.33, -76.4, 3.52]
 
+/** Fuente DEM del terreno 3D (aparte de la del sombreado, como pide Mapbox). */
+const TERRAIN_SOURCE = 'lab-terrain-dem'
+/** Relieve sin exageración vertical: lo que se ve es la pendiente real. */
+const TERRAIN_EXAGGERATION = 1
+
 export const mainLayerId = (projectId: string) => `lab-proj-${projectId}`
 
 export function defaultStyle(kind: LabLayerKind, lens: Lens): LayerStyle {
@@ -76,6 +81,8 @@ export type LabRegistry = {
   /** Capas que responden al clic. */
   pickLayers: string[]
   projectByLayer: Record<string, string>
+  /** Último estado aplicado del terreno 3D, para no llamar setTerrain en vano. */
+  terrainOn: boolean
 }
 
 /** Propiedad de emisión por tipo de capa (la de symbol aplica al texto). */
@@ -93,7 +100,7 @@ const EMISSIVE: Record<string, string> = {
  * Con `lightPreset: 'night'` Standard ilumina también las capas propias y las
  * deja casi negras. Emisión 1 = la capa se pinta con sus colores reales.
  */
-const asLayer = (layer: Record<string, unknown>) => {
+export const asLayer = (layer: Record<string, unknown>) => {
   const key = EMISSIVE[String(layer.type)]
   const paint = { ...((layer.paint as Record<string, unknown>) ?? {}) }
   if (key && !(key in paint)) paint[key] = 1
@@ -102,6 +109,14 @@ const asLayer = (layer: Record<string, unknown>) => {
 
 function addTopography(map: Map, timeline: TimelineEntry[]) {
   const amber = LENSES.topography.color
+  // El terreno se enciende con la lente (ver applyVisibility): da el relieve
+  // 3D y es lo que permite consultar cotas con queryTerrainElevation.
+  map.addSource(TERRAIN_SOURCE, {
+    type: 'raster-dem',
+    url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+    tileSize: 512,
+    maxzoom: 14,
+  })
   map.addSource('lab-dem', {
     type: 'raster-dem',
     url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
@@ -286,6 +301,7 @@ export function addLabLayers(
     projectLayers: {},
     pickLayers: [],
     projectByLayer: {},
+    terrainOn: false,
   }
   projects.forEach((project) => {
     const { layers, pick } = addProject(map, project, datasets[project.id])
@@ -312,6 +328,10 @@ export function applyVisibility(
     const visible = lenses[p.lens] && !hidden[p.id]
     registry.projectLayers[p.id]?.forEach((id) => set(id, visible))
   })
+  if (registry.terrainOn !== lenses.topography) {
+    map.setTerrain(lenses.topography ? { source: TERRAIN_SOURCE, exaggeration: TERRAIN_EXAGGERATION } : null)
+    registry.terrainOn = lenses.topography
+  }
   // Opt-in: a pantalla completa las fronteras de teselas tapan todo lo demás.
   map.showTileBoundaries = lenses.software && tileBoundaries
 }

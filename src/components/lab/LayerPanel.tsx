@@ -12,6 +12,8 @@ type Props = {
   onSelect: (id: string) => void
   tileBoundaries: boolean
   onToggleTileBoundaries: () => void
+  profileOpen: boolean
+  onToggleProfile: () => void
 }
 
 const STATUS_LABEL: Record<LabProject['status'], string> = {
@@ -35,6 +37,8 @@ export default function LayerPanel({
   onSelect,
   tileBoundaries,
   onToggleTileBoundaries,
+  profileOpen,
+  onToggleProfile,
 }: Props) {
   const allOn = LENS_ORDER.every((lens) => lenses[lens])
 
@@ -93,6 +97,29 @@ export default function LayerPanel({
                     {name}
                   </li>
                 ))}
+                {lens === 'topography' && (
+                  <li className="mt-1.5">
+                    <button
+                      type="button"
+                      aria-pressed={profileOpen}
+                      disabled={!on}
+                      onClick={onToggleProfile}
+                      className={`flex w-full items-center gap-2 rounded-lg border px-2 py-1.5 text-left text-[13px] font-medium transition enabled:hover:bg-lab-bg2 ${
+                        profileOpen ? 'bg-lab-bg2' : ''
+                      }`}
+                      style={{ borderColor: profileOpen ? def.color : `${def.color}55` }}
+                    >
+                      <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-none" stroke={def.color} strokeWidth={1.8}>
+                        <path d="M3 18l5-7 4 4 4-8 5 11" strokeLinejoin="round" strokeLinecap="round" />
+                        <path d="M3 21h18" strokeLinecap="round" />
+                      </svg>
+                      {profileOpen ? 'Close elevation profile' : 'Cut an elevation profile'}
+                      <span className="ml-auto rounded-full border border-lab-line px-1.5 font-code text-[9.5px] text-lab-muted">
+                        tool
+                      </span>
+                    </button>
+                  </li>
+                )}
                 {lens === 'software' && (
                   <li className="flex items-center gap-2 font-code text-[11px] text-lab-muted">
                     <input

@@ -19,8 +19,8 @@ export const LENSES: Record<Lens, LensDefinition> = {
   topography: {
     label: 'Topographer',
     color: '#f2c14e',
-    description: 'Measure the ground: contours, relief, graticule and the career traverse.',
-    baseLayers: ['Contours · Mapbox Terrain v2', 'Hillshade · Terrain-DEM v1', 'Graticule · every 1′', 'Career traverse · stations'],
+    description: 'Measure the ground: 3D relief, contours, graticule and elevation profiles.',
+    baseLayers: ['3D relief + hillshade · Terrain-DEM v1', 'Contours · Mapbox Terrain v2', 'Graticule · every 1′', 'Career traverse · stations'],
   },
   gis: {
     label: 'GIS Developer',

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import type { FogSpecification, LngLatBoundsLike, Map, MapMouseEvent } from 'mapbox-gl'
 import { initMap, type MapCamera } from '../../lib/map/initMap'
+import { elevationAt } from '../../lib/lab/dem'
+import { formatMeters } from '../../lib/lab/elevationProfile'
 import { addLabLayers, applyVisibility, type LabRegistry } from '../../lib/lab/labLayers'
 import { LENSES, LENS_ORDER } from '../../lib/lab/lenses'
 import { bboxOf, buildProjectData, buildTraverse } from '../../lib/lab/syntheticGeometry'
@@ -10,8 +12,10 @@ import IdentityCard from './IdentityCard'
 import Inspector, { type PickedFeature } from './Inspector'
 import IntroOverlay from './IntroOverlay'
 import LayerPanel from './LayerPanel'
+import ProfilePanel from './ProfilePanel'
 import ReadView from './ReadView'
 import TelemetryHud from './TelemetryHud'
+import { useElevationProfile } from './useElevationProfile'
 
 type Props = {
   profile: LabProfile
@@ -74,6 +78,22 @@ function framePadding() {
   return { top: 90, bottom: 90, left: 410, right: 470 }
 }
 
+/** Por debajo de este zoom no se pide la cota bajo el cursor: serían demasiadas teselas. */
+const CURSOR_ELEVATION_MIN_ZOOM = 9
+
+/** True desde `md` (768 px): paneles laterales en vez de hojas inferiores. */
+function useIsDesktop() {
+  const [desktop, setDesktop] = useState(true)
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 768px)')
+    const sync = () => setDesktop(query.matches)
+    sync()
+    query.addEventListener('change', sync)
+    return () => query.removeEventListener('change', sync)
+  }, [])
+  return desktop
+}
+
 export default function LabView({ profile, projects }: Props) {
   const [map, setMap] = useState<Map | null>(null)
   const registryRef = useRef<LabRegistry | null>(null)
@@ -92,6 +112,14 @@ export default function LabView({ profile, projects }: Props) {
   const [cursor, setCursor] = useState<{ lng: number; lat: number; ele: number | null } | null>(null)
   /** Proyecto pedido antes de que el mapa terminara de cargar (desde Leer o el hash). */
   const pendingRef = useRef<string | null>(null)
+  const isDesktop = useIsDesktop()
+
+  /** Herramienta de perfil de elevación (lente Topógrafo). */
+  const terrainProfile = useElevationProfile(map)
+  const { open: profileOpen, close: closeProfile } = terrainProfile
+  /** Mientras se dibuja el perfil, los clics del mapa son vértices, no selección. */
+  const drawingRef = useRef(false)
+  drawingRef.current = terrainProfile.active
 
   const datasets = useMemo(() => Object.fromEntries(projects.map((p) => [p.id, buildProjectData(p)])), [projects])
   const traverseBounds = useMemo(() => bboxOf(buildTraverse(profile.timeline)), [profile.timeline])
@@ -216,6 +244,7 @@ export default function LabView({ profile, projects }: Props) {
         pendingRef.current = id
         return
       }
+      closeProfile()
       setSelectedId(id)
       setFeature(null)
       setLayersOpen(false)
@@ -223,8 +252,24 @@ export default function LabView({ profile, projects }: Props) {
       setHidden((h) => (h[id] ? { ...h, [id]: false } : h))
       fitTo(bboxOf(datasets[id].data))
     },
-    [datasets, fitTo, map, projects]
+    [closeProfile, datasets, fitTo, map, projects]
   )
+
+  const toggleProfile = () => {
+    if (profileOpen) {
+      closeProfile()
+      return
+    }
+    setSelectedId(null)
+    setFeature(null)
+    setLayersOpen(false)
+    terrainProfile.start()
+  }
+
+  // El perfil pertenece a la lente Topógrafo: si se apaga, se cierra.
+  useEffect(() => {
+    if (!lenses.topography && profileOpen) closeProfile()
+  }, [lenses.topography, profileOpen, closeProfile])
 
   // Clic y hover sobre las capas de proyectos.
   useEffect(() => {
@@ -234,6 +279,7 @@ export default function LabView({ profile, projects }: Props) {
       registry.pickLayers.filter((id) => map.getLayer(id) && map.getLayoutProperty(id, 'visibility') !== 'none')
 
     const onClick = (e: MapMouseEvent) => {
+      if (drawingRef.current) return
       const layers = pickable()
       const hit = layers.length ? map.queryRenderedFeatures(e.point, { layers })[0] : undefined
       if (!hit) return
@@ -248,11 +294,11 @@ export default function LabView({ profile, projects }: Props) {
       raf = requestAnimationFrame(() => {
         const layers = pickable()
         const over = layers.length > 0 && map.queryRenderedFeatures(e.point, { layers }).length > 0
-        map.getCanvas().style.cursor = over ? 'pointer' : ''
+        map.getCanvas().style.cursor = drawingRef.current ? 'crosshair' : over ? 'pointer' : ''
         setCursor({
           lng: e.lngLat.lng,
           lat: e.lngLat.lat,
-          ele: map.queryTerrainElevation(e.lngLat, { exaggerated: false }) ?? null,
+          ele: map.getZoom() >= CURSOR_ELEVATION_MIN_ZOOM ? elevationAt(e.lngLat.lng, e.lngLat.lat) : null,
         })
       })
     }
@@ -320,6 +366,8 @@ export default function LabView({ profile, projects }: Props) {
       onSelect={selectProject}
       tileBoundaries={tileBoundaries}
       onToggleTileBoundaries={() => setTileBoundaries((v) => !v)}
+      profileOpen={profileOpen}
+      onToggleProfile={toggleProfile}
     />
   )
 
@@ -399,7 +447,7 @@ export default function LabView({ profile, projects }: Props) {
           <div className="absolute inset-x-4 top-16 z-10 md:hidden">
             <IdentityCard profile={profile} />
           </div>
-          {!selected && (
+          {!selected && !profileOpen && (
             <button
               type="button"
               onClick={() => setLayersOpen((o) => !o)}
@@ -408,7 +456,7 @@ export default function LabView({ profile, projects }: Props) {
               {layersOpen ? 'Close layers' : 'Layers · 3 lenses'}
             </button>
           )}
-          {layersOpen && !selected && (
+          {layersOpen && !selected && !profileOpen && (
             <div className="absolute inset-x-0 bottom-0 z-10 flex max-h-[62%] flex-col md:hidden">{layerPanel}</div>
           )}
 
@@ -427,16 +475,37 @@ export default function LabView({ profile, projects }: Props) {
             </div>
           )}
 
-          <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex">
-            {map && lenses.software && <TelemetryHud map={map} />}
+          {/* Centro inferior, en el espacio libre entre paneles: perfil, telemetría y coordenadas. */}
+          <div
+            className={`pointer-events-none absolute bottom-4 left-[392px] z-10 hidden flex-col items-center gap-2 md:flex ${
+              selected ? 'right-[452px]' : 'right-16'
+            }`}
+          >
+            {profileOpen && isDesktop && (
+              <div className="w-full max-w-[760px]">
+                <ProfilePanel tool={terrainProfile} />
+              </div>
+            )}
+            {map && lenses.software && !profileOpen && (
+              <div className={selected ? 'hidden xl:block' : ''}>
+                <TelemetryHud map={map} />
+              </div>
+            )}
             <div className="rounded-lg border border-lab-line bg-lab-card/85 px-3 py-1 font-code text-[11px] text-lab-muted tabular-nums backdrop-blur-md">
               {cursor
                 ? `${Math.abs(cursor.lat).toFixed(5)}° ${cursor.lat >= 0 ? 'N' : 'S'} · ${Math.abs(cursor.lng).toFixed(5)}° ${
                     cursor.lng >= 0 ? 'E' : 'W'
-                  }${cursor.ele !== null ? ` · ${Math.round(cursor.ele)} m` : ''}`
+                  }${cursor.ele !== null ? ` · ${formatMeters(cursor.ele)}` : ''}`
                 : 'WGS84 · move the cursor over the map'}
             </div>
           </div>
+
+          {/* Móvil: el perfil ocupa la hoja inferior. */}
+          {profileOpen && !isDesktop && (
+            <div className="absolute inset-x-0 bottom-0 z-20">
+              <ProfilePanel tool={terrainProfile} />
+            </div>
+          )}
 
           {!map && (
             <div className="absolute inset-0 z-0 grid place-items-center font-code text-[12px] text-lab-muted">
